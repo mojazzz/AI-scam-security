@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* หากต้องการเขียน CSS เพิ่มเติม สามารถเขียนต่อด้านล่างนี้ได้เลย */
+body {
+  font-family: 'Inter', sans-serif;
+}
