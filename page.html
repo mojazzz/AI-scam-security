@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scam Detector — PDPA Compliant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:        #0d1b2e;
+  --navy-mid:    #152236;
+  --navy-card:   #1a2b40;
+  --navy-light:  #1e3050;
+  --border:      rgba(255,255,255,0.07);
+  --blue:        #2563eb;
+  --blue-dim:    rgba(37,99,235,0.12);
+  --teal:        #0891b2;
+  --green:       #059669;
+  --green-dim:   rgba(5,150,105,0.12);
+  --red:         #dc2626;
+  --red-dim:     rgba(220,38,38,0.12);
+  --amber:       #d97706;
+  --amber-dim:   rgba(217,119,6,0.12);
+  --text-1:      #f1f5f9;
+  --text-2:      #94a3b8;
+  --text-3:      #64748b;
+  --page-bg:     #eef2f7;
+  --card-bg:     #ffffff;
+  --font:        'DM Sans', 'IBM Plex Sans Thai', sans-serif;
+  --mono:        'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--page-bg);
+  color: var(--navy);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOPBAR ─────────────────────────────── */
+.topbar {
+  background: var(--navy);
+  height: 56px;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  border-bottom: 1px solid var(--border);
+}
+.tb-brand { display: flex; align-items: center; gap: 11px; }
+.tb-logomark {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+}
+.tb-logomark svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2; }
+.tb-name { font-size: 14px; font-weight: 700; color: var(--text-1); letter-spacing: 0.03em; }
+.tb-sub  { font-size: 11px; color: var(--text-3); letter-spacing: 0.01em; }
+.tb-right { display: flex; align-items: center; gap: 10px; }
+.tb-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--navy-light);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.tb-pill:hover { border-color: rgba(255,255,255,0.18); }
+.led {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.led-green { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+.led-blue  { background: #60a5fa; box-shadow: 0 0 5px #60a5fa; }
+.led-red   { background: #f87171; box-shadow: 0 0 5px #f87171; }
+.back-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 5px 14px;
+  border-radius: 7px;
+  font-size: 12px; font-family: var(--font);
+  cursor: pointer; transition: all .2s;
+}
+.back-btn:hover { background: var(--navy-light); color: var(--text-1); }
+
+/* ── STATUSBAR ──────────────────────────── */
+.statusbar {
+  background: var(--navy-mid);
+  padding: 6px 28px;
+  display: flex; align-items: center; gap: 28px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.s-tag {
+  font-size: 11px; color: var(--text-3);
+  font-family: var(--mono);
+  display: flex; align-items: center; gap: 5px;
+}
+.s-dot { width: 5px; height: 5px; border-radius: 50%; }
+.s-dot-g { background: #22c55e; }
+.s-dot-r { background: #f87171; }
+.s-dot-y { background: #fbbf24; }
+.s-dot-b { background: #60a5fa; }
+
+/* ── PAGE SYSTEM ────────────────────────── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ════════════════════════════════════════
+   PAGE 1 — INPUT
+════════════════════════════════════════ */
+.p-input { background: var(--page-bg); min-height: calc(100vh - 90px); padding: 44px 24px; }
+
+.input-shell {
+  max-width: 820px; margin: 0 auto;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+.input-header {
+  background: var(--navy);
+  padding: 13px 22px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.input-header-label {
+  font-size: 11px; font-family: var(--mono); font-weight: 600;
+  letter-spacing: 0.1em; color: var(--text-2);
+  display: flex; align-items: center; gap: 10px;
+}
+.hdr-indicators { display: flex; gap: 5px; }
+.hdr-ind {
+  width: 9px; height: 9px; border-radius: 50%;
+}
+.hdr-ind-a { background: var(--blue); }
+.hdr-ind-b { background: var(--teal); opacity: .5; }
+.input-header-hint { font-size: 11px; color: var(--text-3); }
+
+.input-body { padding: 24px 24px 22px; }
+
+.type-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 22px; }
+.type-tile {
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 12px;
+  cursor: pointer;
+  background: #fafbfd;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.type-tile:hover { border-color: #93c5fd; background: #f0f7ff; }
+.type-tile.sel {
+  border-color: var(--blue);
+  background: #eff6ff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.08);
+}
+.tile-icon {
+  width: 28px; height: 28px; margin-bottom: 9px;
+  color: #94a3b8;
+}
+.type-tile.sel .tile-icon { color: var(--blue); }
+.tile-icon svg { width: 100%; height: 100%; }
+.tile-name { font-size: 12.5px; font-weight: 600; color: #1e293b; }
+.type-tile.sel .tile-name { color: var(--blue); }
+.tile-sub  { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+.field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.field-row label { font-size: 12.5px; font-weight: 600; color: #334155; }
+.char-ct { font-family: var(--mono); font-size: 11px; color: #94a3b8; }
+
+textarea.main-ta {
+  width: 100%; min-height: 130px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 11px;
+  padding: 14px 16px;
+  font-family: var(--font); font-size: 13.5px; color: #334155;
+  resize: vertical; background: #fafbfd; outline: none;
+  transition: border-color .2s, background .2s;
+  line-height: 1.65;
+}
+textarea.main-ta:focus { border-color: #93c5fd; background: #fff; }
+textarea.main-ta::placeholder { color: #b0bec5; }
+
+.ta-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+.sup-note { font-size: 11.5px; color: #64748b; display: flex; align-items: center; gap: 5px; }
+.sup-note svg { width: 13px; height: 13px; }
+.sample-row { display: flex; gap: 6px; }
+.sample-btn {
+  background: #f1f5f9; border: 1.5px solid #e2e8f0;
+  color: #475569; border-radius: 7px; padding: 5px 13px;
+  font-size: 11.5px; cursor: pointer; transition: all .2s;
+  font-family: var(--font);
+}
+.sample-btn:hover { background: #e2e8f0; }
+
+.analyze-btn {
+  width: 100%; margin-top: 20px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 11px;
+  padding: 16px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: var(--font);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 3px 18px rgba(37,99,235,.3);
+  letter-spacing: .01em;
+}
+.analyze-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 5px 24px rgba(37,99,235,.4); }
+.analyze-btn:active { transform: translateY(0); }
+.analyze-btn svg { width: 17px; height: 17px; }
+
+/* ════════════════════════════════════════
+   PAGE 2 — RESULT
+════════════════════════════════════════ */
+.p-result { background: var(--page-bg); min-height: calc(100vh - 90px); }
+
+.hero-band {
+  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+  padding: 28px 28px 32px;
+  display: flex; gap: 28px; align-items: flex-start;
+  position: relative; overflow: hidden;
+}
+.hero-band::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255,255,255,.015) 0, rgba(255,255,255,.015) 1px,
+    transparent 1px, transparent 14px
+  );
+  pointer-events: none;
+}
+
+.score-block { flex-shrink: 0; position: relative; z-index: 1; }
+.score-label { font-size: 10px; font-family: var(--mono); letter-spacing: .1em; color: rgba(255,255,255,.45); text-transform: uppercase; text-align: center; margin-bottom: 7px; }
+.score-box {
+  width: 130px; height: 130px;
+  background: rgba(0,0,0,.22);
+  border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-num  { font-size: 50px; font-weight: 800; color: #fff; line-height: 1; font-family: var(--mono); }
+.score-denom { font-size: 11px; color: rgba(255,255,255,.45); font-family: var(--mono); }
+.score-pips { display: flex; gap: 3px; margin-top: 9px; }
+.pip { width: 10px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.18); }
+.pip.on { background: rgba(255,255,255,.75); }
+.pip.hi { background: #fff; }
+
+.hero-content { flex: 1; position: relative; z-index: 1; min-width: 0; }
+.analysis-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  color: rgba(255,255,255,.9);
+  font-size: 10.5px; font-family: var(--mono); font-weight: 600;
+  letter-spacing: .1em; border-radius: 99px; padding: 3px 12px;
+  margin-bottom: 12px;
+}
+.analysis-tag .tag-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
+.hero-title { font-size: 24px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 6px; }
+.hero-sub   { font-size: 12.5px; color: rgba(255,255,255,.55); margin-bottom: 18px; font-family: var(--mono); letter-spacing: .05em; }
+
+.agent-panel {
+  background: rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 13px 16px;
+}
+.agent-panel-title { font-size: 10px; font-family: var(--mono); letter-spacing: .12em; color: rgba(255,255,255,.4); text-transform: uppercase; margin-bottom: 11px; }
+.agent-row { margin-bottom: 9px; }
+.agent-row:last-child { margin-bottom: 0; }
+.agent-meta { display: flex; justify-content: space-between; font-size: 11.5px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
+.agent-pct { font-family: var(--mono); font-weight: 600; color: #fff; }
+.prog-track { height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
+.prog-fill  { height: 100%; border-radius: 2px; background: rgba(255,255,255,.55); transition: width 1s ease; }
+
+/* result grid */
+.result-grid { padding: 22px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.r-card {
+  background: var(--card-bg);
+  border-radius: 13px;
+  padding: 18px 18px;
+  box-shadow: 0 1px 8px rgba(0,0,0,.06);
+}
+.r-card-title {
+  font-size: 11px; font-family: var(--mono); font-weight: 600;
+  letter-spacing: .1em; color: var(--text-3); text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.xai-item {
+  display: flex; gap: 11px; padding: 9px 0;
+  border-bottom: 1px solid #f8fafc; font-size: 12.5px; color: #334155; line-height: 1.55;
+}
+.xai-item:last-child { border-bottom: none; padding-bottom: 0; }
+.xai-n {
+  flex-shrink: 0; width: 20px; height: 20px;
+  border-radius: 5px; background: #eff6ff;
+  font-size: 10px; font-weight: 700; color: var(--blue);
+  font-family: var(--mono); display: flex; align-items: center; justify-content: center;
+}
+
+.advice-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f8fafc; font-size: 12.5px; color: #334155; line-height: 1.55; align-items: flex-start; }
+.advice-item:last-child { border-bottom: none; padding-bottom: 0; }
+.adv-icon { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
+
+.hotline-box { background: #fff7ed; border-radius: 9px; padding: 11px 13px; margin-top: 11px; }
+.hotline-label { font-size: 10.5px; font-weight: 700; color: #92400e; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 7px; }
+.hotline-row { font-size: 12.5px; color: #1e293b; padding: 3px 0; display: flex; align-items: center; gap: 7px; }
+
+.pro-card {
+  grid-column: 1/-1;
+  background: var(--navy-card);
+  border-radius: 13px; padding: 18px;
+  border: 1px solid var(--border);
+}
+.pro-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.pro-label { font-size: 11px; font-family: var(--mono); font-weight: 600; letter-spacing: .1em; color: var(--text-2); text-transform: uppercase; }
+.pro-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.25); font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 99px; letter-spacing: .06em; }
+.pro-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pro-btn {
+  border-radius: 9px; padding: 13px 14px;
+  cursor: pointer; font-family: var(--font); font-size: 12.5px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all .2s; border: 1px solid;
+}
+.pro-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+.pro-btn-red  { background: rgba(220,38,38,.1); border-color: rgba(220,38,38,.3); color: #fca5a5; }
+.pro-btn-red:hover  { background: rgba(220,38,38,.18); }
+.pro-btn-teal { background: rgba(5,150,105,.1); border-color: rgba(5,150,105,.3); color: #6ee7b7; }
+.pro-btn-teal:hover { background: rgba(5,150,105,.18); }
+.pro-btn-sub { font-size: 11px; color: var(--text-3); margin-top: 5px; padding-left: 2px; }
+
+.privacy-row {
+  grid-column: 1/-1;
+  background: #eff6ff; border: 1px solid #bfdbfe;
+  border-radius: 10px; padding: 11px 15px;
+  font-size: 12px; color: #1e40af; line-height: 1.6;
+  display: flex; gap: 9px;
+}
+.privacy-row svg { flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; }
+
+.module-row { grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mod-card {
+  background: var(--navy);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; cursor: pointer; transition: border-color .2s, transform .2s;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.mod-card:hover { border-color: rgba(255,255,255,.18); transform: translateY(-1px); }
+.mod-left { display: flex; align-items: center; gap: 12px; }
+.mod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.mod-dot-r { background: #f87171; box-shadow: 0 0 7px #f87171; }
+.mod-dot-a { background: #fbbf24; box-shadow: 0 0 7px #fbbf24; }
+.mod-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
+.mod-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.mod-right { display: flex; align-items: center; gap: 8px; }
+.mod-tag { font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.mod-tag-r { background: var(--red-dim); color: #f87171; border: 1px solid rgba(220,38,38,.2); }
+.mod-tag-a { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
+.mod-arrow { color: var(--text-3); font-size: 16px; }
+
+/* ════════════════════════════════════════
+   PAGE 3 — CYBER TRACING
+════════════════════════════════════════ */
+.p-cyber { background: var(--navy); min-height: calc(100vh - 90px); }
+.cyber-sub-bar {
+  background: #0a1520; padding: 10px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.csb-left { display: flex; align-items: center; gap: 16px; }
+.csb-brand { display: flex; align-items: center; gap: 10px; }
+.csb-spin {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--teal); display: flex; align-items: center; justify-content: center;
+  animation: spin 4s linear infinite;
+}
+.csb-spin svg { width: 14px; height: 14px; color: var(--teal); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.csb-name { font-size: 12px; font-weight: 700; color: var(--text-1); font-family: var(--mono); }
+.csb-sub  { font-size: 10px; color: var(--text-3); }
+.recon-pill {
+  background: var(--green-dim); border: 1px solid rgba(5,150,105,.3);
+  color: #34d399; font-size: 10.5px; font-family: var(--mono); font-weight: 700;
+  letter-spacing: .08em; padding: 4px 12px; border-radius: 99px;
+  animation: breathe 2.5s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%,100% { box-shadow: 0 0 4px rgba(5,150,105,.2); }
+  50%      { box-shadow: 0 0 10px rgba(5,150,105,.5); }
+}
+.csb-right { display: flex; align-items: center; gap: 12px; }
+.threat-pill {
+  background: rgba(220,38,38,.1); border: 1px solid rgba(220,38,38,.3);
+  color: #fca5a5; font-family: var(--mono); font-size: 11.5px; font-weight: 700;
+  padding: 5px 12px; border-radius: 7px;
+}
+.engines-pill {
+  background: var(--navy-light); border: 1px solid var(--border);
+  color: var(--text-2); font-family: var(--mono); font-size: 11px;
+  padding: 5px 12px; border-radius: 7px;
+}
+.engines-pill b { color: var(--amber); }
+
+.cyber-layout { display: grid; grid-template-columns: 420px 1fr; min-height: calc(100vh - 170px); }
+.cyber-panel { padding: 18px 20px; overflow-y: auto; }
+.cyber-panel-r { padding: 18px 20px; border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; }
+
+.dark-card {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+}
+.dark-card:last-child { margin-bottom: 0; }
+.dc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.dc-label { font-size: 10.5px; font-family: var(--mono); letter-spacing: .1em; color: var(--text-3); text-transform: uppercase; }
+.risk-tag { background: var(--red-dim); border: 1px solid rgba(220,38,38,.25); color: #f87171; font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 5px; }
+
+.url-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--navy); border-radius: 8px; padding: 9px 12px; margin-bottom: 10px;
+}
+.url-bar svg  { width: 13px; height: 13px; color: var(--text-3); flex-shrink: 0; }
+.url-text { font-family: var(--mono); font-size: 12px; color: #f87171; flex: 1; word-break: break-all; }
+.copy-btn { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 2px 5px; border-radius: 4px; transition: color .2s; font-size: 12px; }
+.copy-btn:hover { color: var(--text-1); }
+
+.vt-bar-wrap { margin-top: 6px; }
+.vt-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-3); font-family: var(--mono); margin-bottom: 5px; }
+.vt-labels span:last-child { color: #f87171; font-weight: 700; }
+.vt-track { height: 5px; border-radius: 3px; background: linear-gradient(90deg, #22c55e 0%, #f59e0b 55%, #ef4444 100%); position: relative; }
+.vt-cursor { position: absolute; right: 5%; top: -4px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 2px solid #ef4444; box-shadow: 0 0 8px rgba(239,68,68,.5); }
+.vt-sub-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 4px; }
+
+.meta-rows {}
+.mr { display: flex; align-items: baseline; padding: 7.5px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px; }
+.mr:last-child { border-bottom: none; }
+.mr-key { color: var(--text-3); width: 148px; flex-shrink: 0; }
+.mr-val { color: var(--text-1); font-family: var(--mono); font-size: 11.5px; flex: 1; }
+.mr-val.orange { color: #fbbf24; }
+.mr-val.red    { color: #f87171; }
+.mr-val.dim    { color: #fbbf24; }
+.badge-inline { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; font-size: 9.5px; font-weight: 700; }
+.bi-red  { background: var(--red-dim); color: #f87171; border: 1px solid rgba(220,38,38,.2); }
+.bi-warn { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
+
+.geo-accent {
+  background: rgba(217,119,6,.08); border: 1px solid rgba(217,119,6,.2);
+  border-radius: 9px; padding: 11px 13px; margin-top: 9px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.geo-name { font-size: 14px; font-weight: 700; color: var(--amber); }
+.geo-coords { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); margin-top: 3px; }
+.geo-age { background: var(--red-dim); border: 1px solid rgba(220,38,38,.25); border-radius: 8px; padding: 6px 12px; text-align: center; }
+.geo-age-num { font-family: var(--mono); font-size: 20px; font-weight: 800; color: #f87171; display: block; }
+.geo-age-sub { font-size: 9.5px; color: #f87171; font-family: var(--mono); margin-top: 1px; }
+
+.ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+.port-tile { border-radius: 8px; padding: 8px 10px; }
+.port-safe   { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); }
+.port-warn   { background: var(--amber-dim); border: 1px solid rgba(217,119,6,.25); }
+.port-danger { background: var(--red-dim);   border: 1px solid rgba(220,38,38,.25); }
+.port-num  { font-family: var(--mono); font-size: 14px; font-weight: 700; }
+.port-safe .port-num   { color: #34d399; }
+.port-warn .port-num   { color: #fbbf24; }
+.port-danger .port-num { color: #f87171; }
+.port-name { font-size: 10.5px; margin-top: 2px; }
+.port-safe .port-name   { color: rgba(52,211,153,.65); }
+.port-warn .port-name   { color: rgba(251,191,36,.65); }
+.port-danger .port-name { color: rgba(248,113,113,.65); }
+
+/* map */
+.map-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 0 0 auto; }
+.map-head { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+.map-title-txt { font-size: 11px; font-family: var(--mono); font-weight: 700; color: var(--text-1); letter-spacing: .08em; text-transform: uppercase; }
+.live-tag { display: flex; align-items: center; gap: 5px; font-size: 10px; font-family: var(--mono); color: #34d399; }
+.live-tag .led-green { width: 5px; height: 5px; }
+.map-canvas { height: 180px; background: #07140e; position: relative; overflow: hidden; }
+.map-grid-lines {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(16,185,129,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.mdot { position: absolute; width: 7px; height: 7px; border-radius: 50%; transform: translate(-50%,-50%); }
+.mdot-g { background: #34d399; box-shadow: 0 0 10px #34d399; }
+.mdot-r { background: #f87171; box-shadow: 0 0 10px #f87171; }
+.mdot-o { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+.mdot-b { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
+.mlabel { position: absolute; font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.5); white-space: nowrap; transform: translateX(-50%); }
+.mline { position: absolute; height: 1px; background: rgba(248,113,113,.3); transform-origin: left center; }
+
+/* routing */
+.routing-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
+.routing-head { display: flex; justify-content: space-between; font-size: 10.5px; font-family: var(--mono); color: var(--text-3); margin-bottom: 13px; letter-spacing: .08em; text-transform: uppercase; }
+.routing-hops { display: flex; align-items: flex-end; padding-bottom: 2px; }
+.hop { text-align: center; flex: 1; }
+.hop-circle { width: 11px; height: 11px; border-radius: 50%; margin: 0 auto 6px; }
+.hc-g { background: #34d399; box-shadow: 0 0 6px #34d399; }
+.hc-y { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
+.hc-r { background: #f87171; box-shadow: 0 0 6px #f87171; }
+.hop-city { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text-1); }
+.hop-role { font-size: 9.5px; color: var(--text-3); margin-top: 2px; }
+.hop-arr { flex: 0 0 20px; text-align: center; color: var(--text-3); font-size: 13px; padding-bottom: 16px; }
+
+/* conclusion */
+.conc-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.conc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.conc-title { font-size: 13px; font-weight: 700; color: var(--text-1); }
+.conc-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.conf-badge { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); color: #34d399; font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 5px; }
+.conc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 11px; }
+.conc-item { background: var(--navy); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 11.5px; color: var(--text-2); line-height: 1.45; display: flex; gap: 7px; align-items: flex-start; }
+.ci-bullet { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.ci-g { background: #34d399; }
+.ci-y { background: #fbbf24; }
+.conc-text { background: rgba(0,0,0,.25); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 12px; color: var(--text-2); line-height: 1.65; font-family: var(--mono); margin-bottom: 11px; }
+.conc-text strong { color: var(--text-1); }
+.export-btn {
+  width: 100%; background: var(--blue); border: none; color: #fff;
+  border-radius: 9px; padding: 11px; font-family: var(--font);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background .2s; box-shadow: 0 2px 10px rgba(37,99,235,.35);
+}
+.export-btn:hover { background: #1d4ed8; }
+.export-btn svg { width: 14px; height: 14px; }
+
+/* ════════════════════════════════════════
+   PAGE 4 — THREAT INTEL
+════════════════════════════════════════ */
+.p-intel { background: var(--navy); min-height: calc(100vh - 90px); }
+.intel-sub-bar {
+  background: #0a1520; padding: 10px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.isb-left { display: flex; align-items: center; gap: 14px; }
+.isb-brand { display: flex; align-items: center; gap: 10px; }
+.isb-icon { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, #d97706, #dc2626); display: flex; align-items: center; justify-content: center; }
+.isb-icon svg { width: 16px; height: 16px; color: white; }
+.isb-name { font-size: 12px; font-weight: 700; color: var(--text-1); font-family: var(--mono); }
+.isb-sub  { font-size: 10px; color: var(--text-3); }
+.db-pill { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); color: #34d399; font-size: 10.5px; font-family: var(--mono); font-weight: 700; padding: 3px 12px; border-radius: 99px; }
+.isb-right { display: flex; align-items: center; gap: 10px; }
+.stat-chip { background: var(--navy-light); border: 1px solid var(--border); color: var(--text-2); font-family: var(--mono); font-size: 11px; padding: 4px 12px; border-radius: 7px; }
+.stat-chip b { color: var(--amber); }
+.stat-chip .plus { color: #34d399; }
+
+.intel-layout { display: grid; grid-template-columns: 380px 1fr; min-height: calc(100vh - 170px); }
+.intel-panel   { padding: 18px 20px; border-right: 1px solid var(--border); }
+.intel-panel-r { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+.search-intro { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.search-intro h3 { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 5px; }
+.search-intro p  { font-size: 12px; color: var(--text-3); line-height: 1.55; }
+
+.section-label { font-size: 10.5px; font-family: var(--mono); font-weight: 700; letter-spacing: .12em; color: var(--text-3); text-transform: uppercase; margin-bottom: 12px; margin-top: 16px; display: flex; align-items: center; gap: 8px; }
+
+.field-wrap { margin-bottom: 11px; }
+.field-name { font-size: 12px; color: var(--text-2); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.field-name svg { width: 13px; height: 13px; color: var(--text-3); }
+.field-box {
+  width: 100%; background: var(--navy);
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 9px 13px; display: flex; align-items: center; gap: 8px;
+  transition: border-color .2s;
+}
+.field-box:focus-within { border-color: rgba(96,165,250,.4); }
+.field-box svg { width: 13px; height: 13px; color: var(--text-3); flex-shrink: 0; }
+.field-box input { background: none; border: none; outline: none; flex: 1; color: var(--text-1); font-family: var(--mono); font-size: 12px; }
+.field-box input::placeholder { color: var(--text-3); }
+
+.scan-btn {
+  width: 100%; background: var(--navy-light); border: 1px solid var(--border);
+  color: var(--text-2); border-radius: 9px; padding: 11px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .2s; margin-top: 6px;
+}
+.scan-btn svg { width: 14px; height: 14px; }
+.scan-btn:hover { border-color: rgba(96,165,250,.4); color: var(--text-1); }
+
+.measure-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.mc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.mc-dot { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mc-dot-red  { background: var(--red-dim); }
+.mc-dot-teal { background: var(--green-dim); }
+.mc-dot svg { width: 16px; height: 16px; }
+.mc-title { font-size: 13px; font-weight: 700; color: var(--text-1); }
+.mc-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.trap-box { background: var(--navy); border: 1px solid var(--border); border-radius: 10px; padding: 13px 14px; margin-bottom: 12px; }
+.trap-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.trap-title { font-size: 12.5px; font-weight: 700; color: var(--text-1); }
+.honey-badge { background: var(--amber-dim); border: 1px solid rgba(217,119,6,.25); color: var(--amber); font-size: 9.5px; font-family: var(--mono); font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.trap-desc { font-size: 12px; color: var(--text-3); line-height: 1.55; margin-bottom: 11px; }
+.bait-label { font-size: 10.5px; font-family: var(--mono); letter-spacing: .08em; color: var(--text-3); text-transform: uppercase; margin-bottom: 7px; }
+.bait-row {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bait-row-left { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-1); }
+.bait-row-left svg { width: 14px; height: 14px; color: var(--text-3); }
+.most-eff { background: var(--red-dim); border: 1px solid rgba(220,38,38,.2); color: #f87171; font-size: 9.5px; font-family: var(--mono); font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.gen-trap-btn {
+  width: 100%; margin-top: 11px;
+  background: rgba(220,38,38,.1); border: 1px solid rgba(220,38,38,.3);
+  color: #fca5a5; border-radius: 8px; padding: 11px;
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: all .2s;
+}
+.gen-trap-btn svg { width: 15px; height: 15px; }
+.gen-trap-btn:hover { background: rgba(220,38,38,.18); }
+
+.report-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.report-card p { font-size: 12px; color: var(--text-3); line-height: 1.55; margin-bottom: 13px; }
+
+.pr-items {}
+.pr-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7.5px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px;
+}
+.pr-row:last-child { border-bottom: none; }
+.pr-row-left { display: flex; align-items: center; gap: 8px; }
+.pr-check { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+.pr-check-on  { background: var(--green-dim); border: 1.5px solid rgba(5,150,105,.4); }
+.pr-check-off { background: rgba(255,255,255,.03); border: 1.5px solid rgba(255,255,255,.08); }
+.pr-check-on::after { content: ''; display: block; width: 5px; height: 3px; border-left: 1.5px solid #34d399; border-bottom: 1.5px solid #34d399; transform: rotate(-45deg) translate(2px, 0); margin-top: 3px; margin-left: 3px; }
+.pr-text { color: var(--text-2); }
+.pr-text.dim { color: var(--text-3); }
+.pr-status { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+.ps-hash   { background: var(--green-dim); color: #34d399; border: 1px solid rgba(5,150,105,.2); }
+.ps-mask   { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
+.ps-enc    { background: rgba(99,102,241,.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,.2); }
+.ps-excl   { background: rgba(255,255,255,.04); color: var(--text-3); border: 1px solid var(--border); }
+
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-top: 1px solid rgba(255,255,255,.04); margin-top: 8px; }
+.toggle-info .ti-title { font-size: 12px; color: var(--text-1); font-weight: 500; }
+.toggle-info .ti-sub   { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.toggle { position: relative; width: 36px; height: 20px; cursor: pointer; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.tslider { position: absolute; inset: 0; border-radius: 20px; background: rgba(37,99,235,.15); border: 1px solid rgba(37,99,235,.3); transition: all .3s; }
+.tslider::before { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #60a5fa; top: 2px; left: 2px; transition: all .3s; box-shadow: 0 0 5px rgba(96,165,250,.5); }
+.toggle input:checked + .tslider::before { transform: translateX(16px); }
+
+.zkp-bar { background: var(--green-dim); border: 1px solid rgba(5,150,105,.2); border-radius: 8px; padding: 9px 12px; font-size: 11.5px; color: #34d399; line-height: 1.55; margin-bottom: 12px; display: flex; gap: 8px; }
+.zkp-bar svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+.submit-btn {
+  width: 100%; background: rgba(5,150,105,.12); border: 1px solid rgba(5,150,105,.3);
+  color: #34d399; border-radius: 9px; padding: 13px;
+  font-family: var(--font); font-size: 13.5px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s; box-shadow: 0 2px 12px rgba(5,150,105,.1);
+}
+.submit-btn svg { width: 15px; height: 15px; }
+.submit-btn:hover { background: rgba(5,150,105,.2); }
+
+.crowd-bar { background: var(--navy-card); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; font-size: 11.5px; color: var(--text-3); line-height: 1.6; display: flex; gap: 9px; }
+.crowd-bar svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: var(--text-3); }
+
+/* ── LOADING ─────────────────────────────── */
+.loading-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,20,34,.92); z-index: 200;
+  flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+}
+.loading-overlay.show { display: flex; }
+.loader-ring { width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--navy-light); border-top-color: var(--blue); animation: spin .8s linear infinite; }
+.load-text { font-family: var(--mono); color: var(--text-1); font-size: 13.5px; }
+.load-sub  { font-family: var(--mono); color: var(--text-3); font-size: 11.5px; }
+
+/* toast */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 12.5px; font-family: var(--mono); opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 300; }
+.toast.show { opacity: 1; }
+
+/* cyber tabs */
+.ctabs { display: flex; gap: 0; margin-bottom: 16px; }
+.ctab { flex: 1; padding: 8px 12px; background: var(--navy-light); border: 1px solid var(--border); color: var(--text-3); cursor: pointer; font-family: var(--mono); font-size: 11px; font-weight: 600; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+.ctab svg { width: 12px; height: 12px; }
+.ctab:first-child { border-radius: 8px 0 0 8px; }
+.ctab:last-child  { border-radius: 0 8px 8px 0; border-left: none; }
+.ctab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 2px; }
+
+@media (max-width: 900px) {
+  .type-grid { grid-template-columns: repeat(2,1fr); }
+  .result-grid, .module-row, .pro-btns { grid-template-columns: 1fr; }
+  .r-card:nth-child(2), .pro-card, .privacy-row, .module-row { grid-column: 1; }
+  .cyber-layout, .intel-layout { grid-template-columns: 1fr; }
+  .conc-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loader-ring"></div>
+  <div class="load-text">AI Engine กำลังวิเคราะห์</div>
+  <div class="load-sub">3-Agent Pipeline · Thai NLP · &lt; 4s</div>
+</div>
+<div class="toast" id="toast">คัดลอกแล้ว</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 1 — INPUT
+══════════════════════════════════════════ -->
+<div id="page-input" class="page active">
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="tb-logomark">
+        <svg viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z"/></svg>
+      </div>
+      <div>
+        <div class="tb-name">SCAM DETECTOR</div>
+        <div class="tb-sub">PDPA Compliant · AI Engine</div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-pill"><div class="led led-green"></div> AI Engine Online</div>
+    </div>
+  </div>
+  <div class="statusbar">
+    <div class="s-tag"><div class="s-dot s-dot-g"></div> End-to-End Encrypted</div>
+    <div class="s-tag"><div class="s-dot s-dot-r"></div> 3-Agent AI Pipeline</div>
+    <div class="s-tag"><div class="s-dot s-dot-b"></div> Thai-Language NLP</div>
+    <div class="s-tag"><div class="s-dot s-dot-y"></div> &lt; 4s Analysis Time</div>
+    <div class="s-tag"><div class="s-dot s-dot-g"></div> PDPA 2562 Compliant</div>
+  </div>
+
+  <div class="p-input">
+    <div class="input-shell">
+      <div class="input-header">
+        <div class="input-header-label">
+          <div class="hdr-indicators"><div class="hdr-ind hdr-ind-a"></div><div class="hdr-ind hdr-ind-b"></div></div>
+          INPUT YOUR INFORMATION
+        </div>
+        <div class="input-header-hint">Select type · Paste content · Analyze</div>
+      </div>
+      <div class="input-body">
+        <div class="type-grid">
+          <div class="type-tile sel" onclick="selType(this,'text')">
+            <div class="tile-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <div class="tile-name">Text / SMS ข้อความ</div>
+            <div class="tile-sub">Paste message</div>
+          </div>
+          <div class="type-tile" onclick="selType(this,'url')">
+            <div class="tile-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            </div>
+            <div class="tile-name">URL / Link เว็บไซต์</div>
+            <div class="tile-sub">Check website</div>
+          </div>
+          <div class="type-tile" onclick="selType(this,'img')">
+            <div class="tile-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <div class="tile-name">Screenshot รูปภาพ</div>
+            <div class="tile-sub">Upload image</div>
+          </div>
+          <div class="type-tile" onclick="selType(this,'voice')">
+            <div class="tile-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+            </div>
+            <div class="tile-name">Voice / Audio คลิปเสียง</div>
+            <div class="tile-sub">Record audio</div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label id="contentLabel">Paste content วางข้อความ</label>
+          <div class="char-ct" id="charCount">0 chars</div>
+        </div>
+        <textarea class="main-ta" id="mainInput" rows="6"
+          placeholder="Paste the full suspicious message here....&#10;วางข้อความน่าสงสัย เช่น : 'แจ้งเตือน!! บัญชีของคุณถูกระงับ...'"
+          oninput="updateChar()"></textarea>
+
+        <div class="ta-footer">
+          <div class="sup-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            Supports Thai, English, and mixed-language
+          </div>
+          <div class="sample-row">
+            <button class="sample-btn" onclick="loadSample(1)">Sample 1</button>
+            <button class="sample-btn" onclick="loadSample(2)">Sample 2</button>
+            <button class="sample-btn" onclick="loadSample(3)">Sample 3</button>
+          </div>
+        </div>
+
+        <button class="analyze-btn" onclick="startAnalysis()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Analyze for Risks
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 2 — RESULT
+══════════════════════════════════════════ -->
+<div id="page-result" class="page">
+  <div class="topbar">
+    <div class="tb-brand">
+      <button class="back-btn" onclick="showPage('input')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        วิเคราะห์ใหม่
+      </button>
+      <div class="tb-logomark"><svg viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z"/></svg></div>
+      <div><div class="tb-name">SCAM DETECTOR</div><div class="tb-sub">PDPA Compliant · Local Processing · Zero Data Retention</div></div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-pill"><div class="led led-blue"></div> Connect Smartwatch</div>
+      <div class="tb-pill"><div class="led led-green"></div> AI Engine Online</div>
+    </div>
+  </div>
+  <div class="statusbar">
+    <div class="s-tag"><div class="s-dot s-dot-g"></div> End-to-End Encrypted</div>
+    <div class="s-tag"><div class="s-dot s-dot-r"></div> 3-Agent AI Pipeline</div>
+    <div class="s-tag"><div class="s-dot s-dot-b"></div> Thai-Language NLP</div>
+    <div class="s-tag"><div class="s-dot s-dot-y"></div> &lt; 4s Analysis Time</div>
+    <div class="s-tag"><div class="s-dot s-dot-g"></div> PDPA 2562 Compliant</div>
+  </div>
+
+  <div class="p-result">
+    <div class="hero-band">
+      <div class="score-block">
+        <div class="score-label">Risk Score</div>
+        <div class="score-box">
+          <div class="score-num">90</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+        <div class="score-pips">
+          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
+          <div class="pip hi"></div><div class="pip hi"></div><div class="pip"></div>
+        </div>
+      </div>
+      <div class="hero-content">
+        <div class="analysis-tag"><div class="tag-dot"></div> ANALYSIS COMPLETE</div>
+        <div class="hero-title">อันตราย! — พบรูปแบบการหลอกลวงชัดเจน</div>
+        <div class="hero-sub">DANGER — High-Risk Scam Detected</div>
+        <div class="agent-panel">
+          <div class="agent-panel-title">AI Agent Breakdown</div>
+          <div class="agent-row">
+            <div class="agent-meta"><span>LLM Contextual Agent (60%)</span><span class="agent-pct">88%</span></div>
+            <div class="prog-track"><div class="prog-fill" style="width:88%"></div></div>
+          </div>
+          <div class="agent-row">
+            <div class="agent-meta"><span>Rule-Based Engine (30%)</span><span class="agent-pct">82%</span></div>
+            <div class="prog-track"><div class="prog-fill" style="width:82%"></div></div>
+          </div>
+          <div class="agent-row">
+            <div class="agent-meta"><span>AI Classifier Thai (10%)</span><span class="agent-pct">86%</span></div>
+            <div class="prog-track"><div class="prog-fill" style="width:86%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="r-card">
+        <div class="r-card-title">Explainable AI (XAI) Reasons — เหตุผลที่ AI ตัดสินใจแบบนี้</div>
+        <div class="xai-item"><div class="xai-n">1</div><div>พบภาษาสร้างความเร่งด่วนสูง เช่น "ดำเนินการทันที!" และ "บัญชีจะถูกปิดใน 24 ชั่วโมง"</div></div>
+        <div class="xai-item"><div class="xai-n">2</div><div>โดเมนถูกจดทะเบียนเพียง 2 วันที่ผ่านมา — สัญญาณโดเมนใหม่ความเสี่ยงสูงมาก</div></div>
+        <div class="xai-item"><div class="xai-n">3</div><div>หมายเลขโทรศัพท์ตรงกับบัญชีดำในระบบฐานข้อมูลแห่งชาติ</div></div>
+        <div class="xai-item"><div class="xai-n">4</div><div>WangchanBERTa ความมั่นใจว่าเป็นสแกม: 94.7% — เนื้อหามีจำเพาะชัดเจน</div></div>
+        <div class="xai-item"><div class="xai-n">5</div><div>ตรวจพบการแอบอ้างเป็นหน่วยงานรัฐ (ธ.ก.ส. / กรมสรรพากร)</div></div>
+      </div>
+
+      <div class="r-card">
+        <div class="r-card-title">Actionable Advice — สิ่งที่ควรทำทันที</div>
+        <div class="advice-item">
+          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+          <div>บล็อกหมายเลขทันที — ห้ามตอบกลับโดยเด็ดขาด</div>
+        </div>
+        <div class="advice-item">
+          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+          <div>ห้ามคลิกลิงก์ใดๆ — มีความเสี่ยงสูงจะติดตั้งมัลแวร์</div>
+        </div>
+        <div class="advice-item">
+          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
+          <div>แจ้งความ ETDA โทร <strong>1212</strong> ตลอด 24 ชั่วโมง (โทรฟรี)</div>
+        </div>
+        <div class="advice-item">
+          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div>แจ้งเตือนสมาชิกในครอบครัว — รูปแบบนี้กำลังแพร่กระจาย</div>
+        </div>
+        <div class="advice-item">
+          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div>ร้องเรียนที่ thaipoliceonline.com</div>
+        </div>
+        <div class="hotline-box">
+          <div class="hotline-label">ช่องทางแจ้งเหตุ</div>
+          <div class="hotline-row">ETDA Cybercrime: <strong>1212</strong></div>
+          <div class="hotline-row">thaipoliceonline.com</div>
+        </div>
+      </div>
+
+      <div class="pro-card">
+        <div class="pro-top">
+          <div class="pro-label">Advanced Tracing &amp; Deception Tools</div>
+          <div class="pro-badge">PRO FEATURES</div>
+        </div>
+        <div class="pro-btns">
+          <div>
+            <button class="pro-btn pro-btn-red" onclick="showPage('intel')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+              Generate Honey-Token Link Trap
+            </button>
+            <div class="pro-btn-sub">สร้าง decoy URL เพื่อติดตาม digital footprint ของอาชญากร</div>
+          </div>
+          <div>
+            <button class="pro-btn pro-btn-teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              One-Click Safe Share (LINE)
+            </button>
+            <div class="pro-btn-sub">สร้าง Infographic ภาษาไทย-อังกฤษ เพื่อแจ้งเตือนครอบครัว</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="privacy-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span><strong>Automated Data Ephemerality:</strong> ข้อความและเนื้อหาทั้งหมดจะถูกลบออกจากระบบภายใน 5 นาที ไม่มีการเก็บข้อมูลส่วนบุคคล ปฏิบัติตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) พ.ศ. 2562</span>
+      </div>
+
+      <div class="module-row">
+        <div class="mod-card" onclick="showPage('cyber')">
+          <div class="mod-left">
+            <div class="mod-dot mod-dot-r"></div>
+            <div>
+              <div class="mod-title">Cyber Threat Tracing</div>
+              <div class="mod-sub">IP Geolocation · EXIF · Threat Map</div>
+            </div>
+          </div>
+          <div class="mod-right">
+            <div class="mod-tag mod-tag-r">FR2.6</div>
+            <div class="mod-arrow">›</div>
+          </div>
+        </div>
+        <div class="mod-card" onclick="showPage('intel')">
+          <div class="mod-left">
+            <div class="mod-dot mod-dot-a"></div>
+            <div>
+              <div class="mod-title">Threat Intel Center</div>
+              <div class="mod-sub">Honey-Token · ZKP Report · Crowd Intel</div>
+            </div>
+          </div>
+          <div class="mod-right">
+            <div class="mod-tag mod-tag-a">FR2.7</div>
+            <div class="mod-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 3 — CYBER TRACING
+══════════════════════════════════════════ -->
+<div id="page-cyber" class="page">
+  <div class="topbar">
+    <div class="tb-brand">
+      <button class="back-btn" onclick="showPage('result')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        กลับ
+      </button>
+    </div>
+  </div>
+  <div class="cyber-sub-bar">
+    <div class="csb-left">
+      <div class="csb-brand">
+        <div class="csb-spin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/></svg>
+        </div>
+        <div>
+          <div class="csb-name">Cyber Threat Tracing &amp; OSINT Intelligence</div>
+          <div class="csb-sub">FR2.6 — IP Geolocation &amp; Metadata Extraction</div>
+        </div>
+      </div>
+      <div class="recon-pill">ACTIVE RECONNAISSANCE MODE</div>
+    </div>
+    <div class="csb-right">
+      <div class="threat-pill">Threat Score: 94 / 100</div>
+      <div class="engines-pill">Engines: <b>12</b> / 87 flagged</div>
+    </div>
+  </div>
+
+  <div class="cyber-layout">
+    <div class="cyber-panel">
+      <div class="ctabs">
+        <div class="ctab active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+          FR2.6.1 — URL / IP OSINT
+        </div>
+        <div class="ctab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          FR2.6.2 — Image EXIF
+        </div>
+      </div>
+
+      <div class="dark-card">
+        <div class="dc-head">
+          <div class="dc-label">Target Analyzed</div>
+          <div class="risk-tag">HIGH RISK</div>
+        </div>
+        <div class="url-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+          <span class="url-text">http://scam-bank-verification.com/th/login</span>
+          <button class="copy-btn" onclick="copyText('http://scam-bank-verification.com/th/login')">⧉</button>
+        </div>
+        <div class="vt-bar-wrap">
+          <div class="vt-labels"><span>VirusTotal — Threat Score</span><span>94 / 100</span></div>
+          <div class="vt-track"><div class="vt-cursor"></div></div>
+          <div class="vt-sub-labels"><span>0 — Safe</span><span>40 — Warning</span><span>70 — Danger</span></div>
+        </div>
+      </div>
+
+      <div class="dark-card">
+        <div class="dc-label" style="margin-bottom:12px;">Server Metadata — IP Intelligence</div>
+        <div class="meta-rows">
+          <div class="mr"><span class="mr-key">Server IP</span><span class="mr-val orange">103.245.48.221 <button class="copy-btn" onclick="copyText('103.245.48.221')">⧉</button></span></div>
+          <div class="mr"><span class="mr-key">ISP / Host</span><span class="mr-val dim">Rogue Asia Hosting Co., Ltd.</span></div>
+          <div class="mr"><span class="mr-key">CDN / Proxy</span><span class="mr-val dim">Cloudflare Proxy (Origin Masked)</span></div>
+          <div class="mr"><span class="mr-key">ASN</span><span class="mr-val">AS13339B — ICIDC-CONSORTIUM-AS-AP</span></div>
+          <div class="mr"><span class="mr-key">SSL Certificate</span><span class="mr-val red">Let's Encrypt — ออกเมื่อ 1 วันที่แล้ว</span></div>
+          <div class="mr"><span class="mr-key">Registrar</span><span class="mr-val">Namecheap (Privacy Protected)</span></div>
+          <div class="mr"><span class="mr-key">Reverse DNS</span><span class="mr-val red">ไม่มีการตั้งค่า (น่าสงสัย)<span class="badge-inline bi-red">HIGH</span></span></div>
+        </div>
+        <div class="geo-accent">
+          <div>
+            <div class="geo-name">Cambodia</div>
+            <div class="geo-coords">Phnom Penh — 11.5564° N, 104.9282° E</div>
+          </div>
+          <div class="geo-age">
+            <span class="geo-age-num">2</span>
+            <div class="geo-age-sub">วัน · Critical Risk</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dark-card">
+        <div class="dc-label" style="margin-bottom:10px;">Open Ports Detected</div>
+        <div class="ports-grid">
+          <div class="port-tile port-safe"><div class="port-num">:80</div><div class="port-name">HTTP</div></div>
+          <div class="port-tile port-safe"><div class="port-num">:443</div><div class="port-name">HTTPS</div></div>
+          <div class="port-tile port-warn"><div class="port-num">:22</div><div class="port-name">SSH Open</div></div>
+          <div class="port-tile port-danger"><div class="port-num">:3306</div><div class="port-name">MySQL Exposed</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cyber-panel-r">
+      <div class="map-card">
+        <div class="map-head">
+          <div class="map-title-txt">Live Cyber Threat Map</div>
+          <div class="live-tag"><div class="led-green led"></div> Real-time · Auto-Refresh 30s</div>
+        </div>
+        <div class="map-canvas">
+          <div class="map-grid-lines"></div>
+          <div class="mdot mdot-g" style="left:44%;top:52%"></div>
+          <div class="mdot mdot-b" style="left:53%;top:45%"></div>
+          <div class="mdot mdot-o" style="left:61%;top:37%"></div>
+          <div class="mdot mdot-r" style="left:63%;top:54%"></div>
+          <div class="mline" style="left:44%;top:52%;width:65px;transform:rotate(18deg)"></div>
+          <div class="mline" style="left:53%;top:45%;width:60px;transform:rotate(12deg)"></div>
+          <div class="mline" style="left:61%;top:37%;width:40px;transform:rotate(38deg)"></div>
+          <div class="mlabel" style="left:44%;top:58%">Bangkok, TH</div>
+          <div class="mlabel" style="left:53%;top:40%">Singapore</div>
+          <div class="mlabel" style="left:61%;top:32%">Hong Kong</div>
+          <div class="mlabel" style="left:63%;top:59%;color:#f87171">Threat Server</div>
+        </div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:var(--text-3);font-family:var(--mono)">15.5564° N — 104.0082° E · SE Asia Focus</span>
+          <div class="live-tag"><div class="led-green led"></div> Live</div>
+        </div>
+      </div>
+
+      <div class="routing-card">
+        <div class="routing-head"><span>Attack Routing Path</span><span style="color:var(--teal)">4 hops traced</span></div>
+        <div class="routing-hops">
+          <div class="hop"><div class="hop-circle hc-g"></div><div class="hop-city">Bangkok, TH</div><div class="hop-role">Your IP</div></div>
+          <div class="hop-arr">›</div>
+          <div class="hop"><div class="hop-circle hc-y"></div><div class="hop-city">Singapore</div><div class="hop-role">Relay 1</div></div>
+          <div class="hop-arr">›</div>
+          <div class="hop"><div class="hop-circle hc-y"></div><div class="hop-city">Hong Kong</div><div class="hop-role">Relay 2</div></div>
+          <div class="hop-arr">›</div>
+          <div class="hop"><div class="hop-circle hc-r"></div><div class="hop-city">Phnom Penh, KH</div><div class="hop-role">Threat Server</div></div>
+        </div>
+      </div>
+
+      <div class="conc-card">
+        <div class="conc-head">
+          <div><div class="conc-title">Cyber Forensic Conclusion</div><div class="conc-sub">สรุปผลการวิเคราะห์ทางนิติวิทยาศาสตร์ดิจิทัล</div></div>
+          <div class="conf-badge">HIGH CONFIDENCE</div>
+        </div>
+        <div class="conc-grid">
+          <div class="conc-item"><div class="ci-bullet ci-g"></div>ปัญหาจากนอกประเทศไทย — ความเสี่ยงสูง</div>
+          <div class="conc-item"><div class="ci-bullet ci-y"></div>โดเมนอายุ 2 วัน ใช้หลอกให้ผู้ใช้สมัคร</div>
+          <div class="conc-item"><div class="ci-bullet ci-g"></div>GPS ภาพสอดคล้องกับ Server Infrastructure</div>
+          <div class="conc-item"><div class="ci-bullet ci-y"></div>Metadata ภาพ — เอกสารปลอมแปลง (94.7%)</div>
+        </div>
+        <div class="conc-text"><strong>Conclusion:</strong> High probability of an offshore operation. Server hosted in a known high-risk jurisdiction with anonymized domain proxy. Image metadata consistent with server geolocation in Phnom Penh, Cambodia.</div>
+        <button class="export-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Cyber Forensic Evidence (.PDF)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PAGE 4 — THREAT INTEL CENTER
+══════════════════════════════════════════ -->
+<div id="page-intel" class="page">
+  <div class="topbar">
+    <div class="tb-brand">
+      <button class="back-btn" onclick="showPage('result')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        กลับ
+      </button>
+    </div>
+  </div>
+  <div class="intel-sub-bar">
+    <div class="isb-left">
+      <div class="isb-brand">
+        <div class="isb-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <div class="isb-name">Scam Threat Intelligence Center</div>
+          <div class="isb-sub">FR2.7 — Crowdsourced Cyber Threat Deception &amp; Reporting</div>
+        </div>
+      </div>
+      <div class="db-pill">DATABASE ONLINE</div>
+    </div>
+    <div class="isb-right">
+      <div class="stat-chip">Total Reports: <b>48,291</b></div>
+      <div class="stat-chip">Last 24h: <b class="plus">+342</b></div>
+      <div class="stat-chip">Honey Traps: <b>1,847 active</b></div>
+    </div>
+  </div>
+
+  <div class="intel-layout">
+    <div class="intel-panel">
+      <div class="search-intro">
+        <h3>Counter-Intelligence Search</h3>
+        <p>ค้นหาหมายเลขโทรศัพท์ LINE ID หรือเลขบัญชีธนาคารที่ต้องสงสัย แล้วเปิดใช้งานมาตรการตอบโต้ได้</p>
+      </div>
+
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Threat Target Input
+      </div>
+
+      <div class="field-wrap">
+        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0112 18.54 19.5 19.5 0 015.19 12 19.79 19.79 0 012.1 3.22 2 2 0 014 1h3a2 2 0 012 1.72c.128.96.362 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7A2 2 0 0122 14.92z"/></svg> หมายเลขโทรศัพท์</div>
+        <div class="field-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0112 18.54 19.5 19.5 0 015.19 12 19.79 19.79 0 012.1 3.22 2 2 0 014 1h3a2 2 0 012 1.72c.128.96.362 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7A2 2 0 0122 14.92z"/></svg>
+          <input type="text" placeholder="08x-xxx-xxxx">
+        </div>
+      </div>
+      <div class="field-wrap">
+        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Line ID / Social Handle</div>
+        <div class="field-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <input type="text" placeholder="@scam_invest หรือ username">
+        </div>
+      </div>
+      <div class="field-wrap">
+        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> หมายเลขบัญชีธนาคาร</div>
+        <div class="field-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <input type="text" placeholder="เลขบัญชี + ชื่อธนาคาร">
+        </div>
+      </div>
+
+      <button class="scan-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Check Database &amp; Scan History
+      </button>
+    </div>
+
+    <div class="intel-panel-r">
+      <div class="measure-card">
+        <div class="mc-head">
+          <div class="mc-dot mc-dot-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div><div class="mc-title">Advanced Countermeasures</div><div class="mc-sub">ค้นหาบ้าหมากก่อนเพื่อไม่เปิดใช้งานระบบตอบโต้ได้</div></div>
+        </div>
+
+        <div class="trap-box">
+          <div class="trap-head">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            <div class="trap-title">Deploy Deception Trap</div>
+            <div class="honey-badge">Canary Honey-Token</div>
+          </div>
+          <div class="trap-desc">Turn the tables. Generate a decoy asset link to capture the scammer's real digital footprint legally when they click it out of greed.</div>
+          <div class="bait-label">Bait Type</div>
+          <div class="bait-row">
+            <div class="bait-row-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Fake Bank Transfer Slip (.pdf)
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="most-eff">Most Effective</div>
+              <span style="color:var(--text-3)">▾</span>
+            </div>
+          </div>
+          <button class="gen-trap-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Generate Honey-Trap Link
+          </button>
+        </div>
+      </div>
+
+      <div class="report-card">
+        <div class="mc-head">
+          <div class="mc-dot mc-dot-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div><div class="mc-title">Privacy-First Anonymous Report</div><div class="mc-sub">รายงานแบบนิรนาม PDPA-Safe</div></div>
+        </div>
+        <p>Contribute to the central threat database. Your submission will be cryptographically hashed. Even we (the developers) cannot track who reported this or view your raw private chats.</p>
+
+        <div class="section-label" style="margin-top:0">สิ่งที่จะถูกส่งไปยังฐานข้อมูล</div>
+        <div class="pr-items">
+          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">หมายเลขโทรศัพท์ / Line ID (Hashed)</span></div><div class="pr-status ps-hash">HASHED</div></div>
+          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">หมายเลขบัญชีธนาคาร (Masked)</span></div><div class="pr-status ps-mask">MASKED</div></div>
+          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">ประเภทการหลอกลวง (Encoded)</span></div><div class="pr-status ps-enc">ENCODED</div></div>
+          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-off"></div><span class="pr-text dim">เนื้อหาการสนทนาส่วนตัว</span></div><div class="pr-status ps-excl">EXCLUDED</div></div>
+          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-off"></div><span class="pr-text dim">ข้อมูลตัวตนของผู้รายงาน</span></div><div class="pr-status ps-excl">EXCLUDED</div></div>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="ti-title">Enable Homomorphic Cryptographic Hashing</div>
+            <div class="ti-sub">ยกระดับความปลอดภัยด้วย SHA-256 + ZKP protocol</div>
+          </div>
+          <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
+        </div>
+
+        <div class="zkp-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Zero-Knowledge Proof (ZKP) ช่วยให้พิสูจน์ข้อมูลของคุณถูกต้องโดยไม่เปิดเผยข้อมูลส่วนบุคคล — ตามหลักการ PDPA
+        </div>
+
+        <button class="submit-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          Submit Anonymous ZKP Report
+        </button>
+      </div>
+
+      <div class="crowd-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        ระบบ Crowdsourced Intelligence: ข้อมูลทุกรายงานถูกรวบรวมเข้ากับ National Scam Registry แลกเปลี่ยนกับ ETDA · DSI · สำนักงานตำรวจแห่งชาติ ผ่านกรอบกฎหมาย MoU — ข้อมูลส่วนตัวของผู้รายงานได้รับการปกป้อง PDPA พ.ศ. 2562
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const samples = [
+  "แจ้งเตือน!! บัญชีของคุณถูกระงับ กรุณาคลิกลิงก์ยืนยันตัวตนภายใน 24 ชั่วโมง มิฉะนั้นบัญชีจะถูกปิดถาวร https://scam-bank-verify.com/th/login",
+  "คุณได้รับเงินรางวัล 50,000 บาท! ยืนยันการรับเงินโดยโอน 500 บาทเป็นค่าธรรมเนียมก่อน แล้วเงินรางวัลจะถูกโอนภายใน 1 ชั่วโมง LINE: @lottery_official",
+  "กรมสรรพากร: ท่านมีเงินคืนภาษี 12,450 บาท กดลิงก์รับเงินคืนด่วน! ต้องยืนยันข้อมูลบัตรประชาชนและบัญชีธนาคาร https://rd-refund-th.com"
+];
+
+function selType(el, type) {
+  document.querySelectorAll('#page-input .type-tile').forEach(t => t.classList.remove('sel'));
+  el.classList.add('sel');
+  const map = { text:'Paste content วางข้อความ', url:'Enter URL / Link เว็บไซต์', img:'Upload Screenshot รูปภาพ', voice:'Record Voice / Audio เสียง' };
+  document.getElementById('contentLabel').textContent = map[type] || 'Paste content วางข้อความ';
+}
+
+function updateChar() {
+  document.getElementById('charCount').textContent = document.getElementById('mainInput').value.length + ' chars';
+}
+
+function loadSample(n) {
+  const ta = document.getElementById('mainInput');
+  ta.value = samples[n-1];
+  updateChar();
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startAnalysis() {
+  const v = document.getElementById('mainInput').value.trim();
+  if (!v) {
+    const ta = document.getElementById('mainInput');
+    ta.style.borderColor = '#ef4444';
+    setTimeout(() => ta.style.borderColor = '', 1500);
+    return;
+  }
+  const o = document.getElementById('loadingOverlay');
+  o.classList.add('show');
+  setTimeout(() => { o.classList.remove('show'); showPage('result'); }, 2200);
+}
+
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).catch(() => {});
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+</script>
+</body>
+</html>
