@@ -1,6 +1,105 @@
 @import "tailwindcss";
 
-/* หากต้องการเขียน CSS เพิ่มเติม สามารถเขียนต่อด้านล่างนี้ได้เลย */
-body {
-  font-family: 'Inter', sans-serif;
+@theme {
+  --color-navy: #0d1b2e;
+  --color-navy-mid: #152236;
+  --color-navy-card: #1a2b40;
+  --color-navy-light: #1e3050;
+  --color-border: rgba(255,255,255,0.07);
+  --color-scam-blue: #2563eb;
+  --color-scam-teal: #0891b2;
+  --color-scam-green: #059669;
+  --color-scam-red: #dc2626;
+  --color-scam-amber: #d97706;
+  --color-text1: #f1f5f9;
+  --color-text2: #94a3b8;
+  --color-text3: #64748b;
+  --color-page-bg: #eef2f7;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans','IBM Plex Sans Thai',sans-serif;
+    background: #eef2f7;
+    color: #0d1b2e;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    margin: 0; padding: 0;
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1e3050; border-radius: 2px; }
+}
+
+@layer utilities {
+  .font-mono-ibm { font-family: 'IBM Plex Mono', monospace; }
+
+  .led-green {
+    background: #22c55e;
+    box-shadow: 0 0 5px #22c55e;
+  }
+  .led-blue {
+    background: #60a5fa;
+    box-shadow: 0 0 5px #60a5fa;
+  }
+  .led-red {
+    background: #f87171;
+    box-shadow: 0 0 5px #f87171;
+  }
+
+  .breathe {
+    animation: breathe 2.5s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { box-shadow: 0 0 4px rgba(5,150,105,.2); }
+    50%      { box-shadow: 0 0 10px rgba(5,150,105,.5); }
+  }
+
+  .spin-slow {
+    animation: spin 4s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fade-in {
+    animation: fadeIn .25s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(6px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .prog-fill {
+    transition: width 1s ease;
+  }
+
+  .tslider {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: rgba(37,99,235,.15);
+    border: 1px solid rgba(37,99,235,.3);
+    transition: all .3s;
+  }
+  .tslider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #60a5fa;
+    top: 2px; left: 2px;
+    transition: all .3s;
+    box-shadow: 0 0 5px rgba(96,165,250,.5);
+  }
+  input:checked + .tslider::before {
+    transform: translateX(16px);
+  }
 }

@@ -1,46 +1,55 @@
 // backend/routes/analyze.js
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
 import { analyzeWithGemini } from '../services/geminiService.js';
+import { checkUrlSafety } from '../services/safeBrowsingService.js';
 
 const router = express.Router();
 
-// ตั้งค่า Multer เก็บไฟล์ชั่วคราว
-const storage = multer.diskStorage({
-  destination: 'uploads/',
-  filename: (req, file, cb) => {
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
-  },
-});
-
+// memoryStorage — ไม่เขียนไฟล์ลง disk เลย
 const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB
-  },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'audio/mpeg', 'audio/wav', 'audio/mp4'];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('ประเภทไฟล์ไม่รองรับ'), false);
+    const allowed = [
+      'image/jpeg', 'image/png', 'image/webp',
+      'audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/webm',
+    ];
+    allowed.includes(file.mimetype) ? cb(null, true) : cb(new Error('ประเภทไฟล์ไม่รองรับ'));
   },
 });
 
-// POST /api/analyze
+function validateUrl(raw) {
+  try {
+    const url = new URL(raw);
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      throw new Error('รองรับเฉพาะ http/https');
+    }
+    return url.href;
+  } catch {
+    throw new Error('URL ไม่ถูกต้อง');
+  }
+}
+
 router.post('/analyze', upload.single('file'), async (req, res) => {
   try {
-    const { text, url, inputType } = req.body;
+    let { text, url, inputType } = req.body;
     const file = req.file;
 
-    // ตรวจสอบว่ามีข้อมูลส่งมา
     if (!text && !url && !file) {
       return res.status(400).json({ error: 'กรุณาระบุข้อมูลที่ต้องการตรวจสอบ' });
     }
 
-    // ส่งไปวิเคราะห์
-    const result = await analyzeWithGemini({ text, url, file, inputType });
+    if (text) text = text.trim().slice(0, 5000);
 
+    // ตรวจ URL ด้วย Safe Browsing ก่อนส่ง Gemini
+    let urlSafetyResult = null;
+    if (url) {
+      url = validateUrl(url);
+      urlSafetyResult = await checkUrlSafety(url);
+    }
+
+    const result = await analyzeWithGemini({ text, url, file, inputType, urlSafetyResult });
     res.json(result);
   } catch (err) {
     console.error('❌ Error:', err.message);
