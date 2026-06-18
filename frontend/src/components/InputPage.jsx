@@ -2,12 +2,6 @@
 import { useState, useRef } from 'react';
 import { Topbar, Statusbar } from './Topbar';
 
-const SAMPLES = [
-  "แจ้งเตือน!! บัญชีของคุณถูกระงับ กรุณาคลิกลิงก์ยืนยันตัวตนภายใน 24 ชั่วโมง มิฉะนั้นบัญชีจะถูกปิดถาวร https://scam-bank-verify.com/th/login",
-  "คุณได้รับเงินรางวัล 50,000 บาท! ยืนยันการรับเงินโดยโอน 500 บาทเป็นค่าธรรมเนียมก่อน แล้วเงินรางวัลจะถูกโอนภายใน 1 ชั่วโมง LINE: @lottery_official",
-  "กรมสรรพากร: ท่านมีเงินคืนภาษี 12,450 บาท กดลิงก์รับเงินคืนด่วน! ต้องยืนยันข้อมูลบัตรประชาชนและบัญชีธนาคาร https://rd-refund-th.com",
-];
-
 const INPUT_TYPES = [
   {
     id: 'text', label: 'Text / SMS ข้อความ', sub: 'Paste message',
@@ -61,28 +55,25 @@ export default function InputPage({ onAnalyze, error }) {
   const [shake, setShake] = useState(false);
   const fileRef = useRef(null);
 
+  const isFileType = selType === 'image' || selType === 'audio';
+
   const handleSubmit = () => {
     if (!content.trim() && !file) {
       setShake(true);
       setTimeout(() => setShake(false), 1500);
       return;
     }
-
     const fd = new FormData();
     fd.append('inputType', selType);
-
-    if (selType === 'image' || selType === 'audio') {
+    if (isFileType) {
       if (file) fd.append('file', file);
     } else if (selType === 'url') {
       fd.append('url', content.trim());
     } else {
       fd.append('text', content.trim());
     }
-
     onAnalyze(fd, content.trim());
   };
-
-  const isFileType = selType === 'image' || selType === 'audio';
 
   return (
     <div className="fade-in min-h-screen" style={{ background: '#eef2f7' }}>
@@ -116,7 +107,7 @@ export default function InputPage({ onAnalyze, error }) {
               {INPUT_TYPES.map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => setSelType(t.id)}
+                  onClick={() => { setSelType(t.id); setContent(''); setFile(null); }}
                   className="border-[1.5px] rounded-xl p-4 px-3 cursor-pointer text-left transition-all"
                   style={{
                     borderColor: selType === t.id ? '#2563eb' : '#e2e8f0',
@@ -127,16 +118,10 @@ export default function InputPage({ onAnalyze, error }) {
                   onMouseEnter={(e) => { if (selType !== t.id) { e.currentTarget.style.borderColor = '#93c5fd'; e.currentTarget.style.background = '#f0f7ff'; } }}
                   onMouseLeave={(e) => { if (selType !== t.id) { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.background = '#fafbfd'; } }}
                 >
-                  <div
-                    className="w-7 h-7 mb-[9px]"
-                    style={{ color: selType === t.id ? '#2563eb' : '#94a3b8' }}
-                  >
+                  <div className="w-7 h-7 mb-[9px]" style={{ color: selType === t.id ? '#2563eb' : '#94a3b8' }}>
                     {t.icon}
                   </div>
-                  <div
-                    className="text-[12.5px] font-semibold"
-                    style={{ color: selType === t.id ? '#2563eb' : '#1e293b' }}
-                  >
+                  <div className="text-[12.5px] font-semibold" style={{ color: selType === t.id ? '#2563eb' : '#1e293b' }}>
                     {t.label}
                   </div>
                   <div className="text-[11px] text-[#94a3b8] mt-0.5">{t.sub}</div>
@@ -160,6 +145,8 @@ export default function InputPage({ onAnalyze, error }) {
                 className="w-full min-h-[130px] border-[1.5px] rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
                 style={{ borderColor: '#e2e8f0', background: '#fafbfd', borderStyle: 'dashed' }}
                 onClick={() => fileRef.current?.click()}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#93c5fd'; e.currentTarget.style.background = '#f0f7ff'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.background = '#fafbfd'; }}
               >
                 <input
                   ref={fileRef}
@@ -190,7 +177,7 @@ export default function InputPage({ onAnalyze, error }) {
                 }}
                 placeholder={selType === 'url'
                   ? 'https://suspicious-website.com/th/login'
-                  : "Paste the full suspicious message here....\nวางข้อความน่าสงสัย เช่น : 'แจ้งเตือน!! บัญชีของคุณถูกระงับ...'"
+                  : "วางข้อความน่าสงสัย เช่น : 'แจ้งเตือน!! บัญชีของคุณถูกระงับ...'"
                 }
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -198,33 +185,6 @@ export default function InputPage({ onAnalyze, error }) {
                 onFocus={(e) => { e.target.style.borderColor = '#93c5fd'; e.target.style.background = '#fff'; }}
                 onBlur={(e) => { e.target.style.borderColor = shake ? '#ef4444' : '#e2e8f0'; e.target.style.background = '#fafbfd'; }}
               />
-            )}
-
-            {/* Footer row */}
-            {!isFileType && (
-              <div className="flex justify-between items-center mt-3">
-                <div className="flex items-center gap-[5px] text-[11.5px] text-[#64748b]">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[13px] h-[13px]">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
-                  </svg>
-                  Supports Thai, English, and mixed-language
-                </div>
-                <div className="flex gap-1.5">
-                  {SAMPLES.map((_, i) => (
-                    <button
-                      key={i}
-                      className="text-[11.5px] text-[#475569] px-[13px] py-[5px] rounded-[7px] cursor-pointer transition-all"
-                      style={{ background: '#f1f5f9', border: '1.5px solid #e2e8f0', fontFamily: 'inherit' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
-                      onClick={() => setContent(SAMPLES[i])}
-                    >
-                      Sample {i + 1}
-                    </button>
-                  ))}
-                </div>
-              </div>
             )}
 
             {/* Error */}

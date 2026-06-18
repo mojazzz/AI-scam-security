@@ -1,19 +1,63 @@
 // frontend/src/components/ResultPage.jsx
 import { Topbar, Statusbar } from './Topbar';
 
+// ── Risk level config (original colors)
+const LEVEL_CONFIG = {
+  red: {
+    heroGradient: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
+    scoreColor: '#f87171',
+    badgeBg: 'rgba(220,38,38,.12)',
+    badgeText: '#f87171',
+    badgeBorder: 'rgba(220,38,38,.25)',
+    agentBg: 'rgba(0,0,0,.18)',
+    agentBorder: 'rgba(255,255,255,.1)',
+    dangerLabel: 'อันตราย! — พบรูปแบบการหลอกลวงชัดเจน',
+    dangerLabelEn: 'DANGER — High-Risk Scam Detected',
+    levelThai: 'อันตราย',
+  },
+  yellow: {
+    heroGradient: 'linear-gradient(135deg, #92400e 0%, #78350f 100%)',
+    scoreColor: '#fbbf24',
+    badgeBg: 'rgba(217,119,6,.12)',
+    badgeText: '#fbbf24',
+    badgeBorder: 'rgba(217,119,6,.25)',
+    agentBg: 'rgba(0,0,0,.18)',
+    agentBorder: 'rgba(255,255,255,.1)',
+    dangerLabel: 'ระวัง! — พบสัญญาณเสี่ยงบางประการ',
+    dangerLabelEn: 'CAUTION — Suspicious Patterns Found',
+    levelThai: 'ระมัดระวัง',
+  },
+  green: {
+    heroGradient: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)',
+    scoreColor: '#34d399',
+    badgeBg: 'rgba(5,150,105,.12)',
+    badgeText: '#34d399',
+    badgeBorder: 'rgba(5,150,105,.25)',
+    agentBg: 'rgba(0,0,0,.18)',
+    agentBorder: 'rgba(255,255,255,.1)',
+    dangerLabel: 'ปลอดภัย — ไม่พบสัญญาณน่าสงสัย',
+    dangerLabelEn: 'SAFE — No Major Threats Detected',
+    levelThai: 'ปลอดภัย',
+  },
+  unknown: {
+    heroGradient: 'linear-gradient(135deg, #1e3a5f 0%, #0d1b2e 100%)',
+    scoreColor: '#94a3b8',
+    badgeBg: 'rgba(148,163,184,.12)',
+    badgeText: '#94a3b8',
+    badgeBorder: 'rgba(148,163,184,.25)',
+    agentBg: 'rgba(0,0,0,.18)',
+    agentBorder: 'rgba(255,255,255,.1)',
+    dangerLabel: 'ไม่ทราบ — ข้อมูลไม่เพียงพอ',
+    dangerLabelEn: 'UNKNOWN — Insufficient Data',
+    levelThai: 'ไม่ทราบ',
+  },
+};
+
 function ScoreHero({ result }) {
   const score = result?.score ?? 0;
   const level = result?.level ?? 'unknown';
-
-  const heroGradient =
-    level === 'red'
-      ? 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)'
-      : level === 'yellow'
-      ? 'linear-gradient(135deg, #92400e 0%, #78350f 100%)'
-      : 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)';
-
-  const levelThai = result?.levelText || (level === 'red' ? 'อันตราย' : level === 'yellow' ? 'ระมัดระวัง' : 'ปลอดภัย');
-  const dangerLabel = level === 'red' ? 'อันตราย! — พบรูปแบบการหลอกลวงชัดเจน' : level === 'yellow' ? 'ระวัง! — พบสัญญาณเสี่ยงบางประการ' : 'ปลอดภัย — ไม่พบสัญญาณน่าสงสัย';
+  const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG.unknown;
+  const levelThai = result?.levelText || cfg.levelThai;
 
   const pips = 9;
   const filledPips = Math.round((score / 100) * pips);
@@ -21,7 +65,7 @@ function ScoreHero({ result }) {
   return (
     <div
       className="p-7 pb-8 flex gap-7 items-start relative overflow-hidden"
-      style={{ background: heroGradient }}
+      style={{ background: cfg.heroGradient }}
     >
       {/* Diagonal stripe texture */}
       <div
@@ -49,12 +93,7 @@ function ScoreHero({ result }) {
               key={i}
               className="w-[10px] h-[4px] rounded-[2px]"
               style={{
-                background:
-                  i < filledPips - 1
-                    ? 'rgba(255,255,255,.75)'
-                    : i === filledPips - 1
-                    ? '#fff'
-                    : 'rgba(255,255,255,.18)',
+                background: i < filledPips - 1 ? 'rgba(255,255,255,.75)' : i === filledPips - 1 ? '#fff' : 'rgba(255,255,255,.18)',
               }}
             />
           ))}
@@ -70,15 +109,15 @@ function ScoreHero({ result }) {
           <span className="w-[5px] h-[5px] rounded-full" style={{ background: '#4ade80' }} />
           ANALYSIS COMPLETE
         </div>
-        <div className="text-2xl font-extrabold text-white leading-[1.2] mb-1.5">{dangerLabel}</div>
+        <div className="text-2xl font-extrabold text-white leading-[1.2] mb-1.5">{cfg.dangerLabel}</div>
         <div className="text-[12.5px] font-mono-ibm tracking-[.05em] mb-[18px]" style={{ color: 'rgba(255,255,255,.55)' }}>
-          {level === 'red' ? 'DANGER — High-Risk Scam Detected' : level === 'yellow' ? 'CAUTION — Suspicious Patterns Found' : 'SAFE — No Major Threats Detected'}
+          {cfg.dangerLabelEn}
         </div>
 
         {/* Agent breakdown */}
         <div
           className="rounded-[10px] p-[13px] px-4"
-          style={{ background: 'rgba(0,0,0,.18)', border: '1px solid rgba(255,255,255,.1)' }}
+          style={{ background: cfg.agentBg, border: `1px solid ${cfg.agentBorder}` }}
         >
           <div className="text-[10px] font-mono-ibm tracking-[.12em] uppercase mb-[11px]" style={{ color: 'rgba(255,255,255,.4)' }}>
             AI Agent Breakdown
@@ -196,24 +235,10 @@ function AdviceCard({ result }) {
   );
 }
 
-export default function ResultPage({ result, onBack, onGoCyber, onGoIntel, onCopy }) {
-  const level = result?.level ?? 'unknown';
-
+export default function ResultPage({ result, onBack, onCopy }) {
   return (
     <div className="fade-in min-h-screen" style={{ background: '#eef2f7' }}>
-      <Topbar
-        onBack={onBack}
-        backLabel="วิเคราะห์ใหม่"
-        rightSlot={
-          <div
-            className="flex items-center gap-[7px] text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-full cursor-pointer"
-            style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full led-blue" />
-            Connect Smartwatch
-          </div>
-        }
-      />
+      <Topbar onBack={onBack} backLabel="วิเคราะห์ใหม่" />
       <Statusbar />
 
       <div className="min-h-[calc(100vh-90px)]" style={{ background: '#eef2f7' }}>
@@ -223,103 +248,19 @@ export default function ResultPage({ result, onBack, onGoCyber, onGoIntel, onCop
           <XAICard result={result} />
           <AdviceCard result={result} />
 
-          {/* Advanced Tools */}
-          <div
-            className="col-span-2 rounded-[13px] p-[18px]"
-            style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}
-          >
-            <div className="flex justify-between items-center mb-[14px]">
-              <div className="text-[11px] font-mono-ibm font-semibold tracking-[.1em] text-[#94a3b8] uppercase">
-                Advanced Tracing &amp; Deception Tools
-              </div>
-              <div
-                className="text-[10px] font-mono-ibm font-bold px-[9px] py-[2px] rounded-full tracking-[.06em]"
-                style={{ background: 'rgba(217,119,6,.12)', color: '#d97706', border: '1px solid rgba(217,119,6,.25)' }}
-              >
-                PRO FEATURES
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <button
-                  onClick={onGoIntel}
-                  className="w-full rounded-[9px] p-[13px] px-[14px] font-semibold text-[12.5px] flex items-center gap-2 cursor-pointer transition-all"
-                  style={{ background: 'rgba(220,38,38,.1)', borderColor: 'rgba(220,38,38,.3)', border: '1px solid', color: '#fca5a5', fontFamily: 'inherit' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.18)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.1)'; }}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[15px] h-[15px] flex-shrink-0">
-                    <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
-                  </svg>
-                  Generate Honey-Token Link Trap
-                </button>
-                <div className="text-[11px] text-[#64748b] mt-1.5 pl-0.5">สร้าง decoy URL เพื่อติดตาม digital footprint ของอาชญากร</div>
-              </div>
-              <div>
-                <button
-                  className="w-full rounded-[9px] p-[13px] px-[14px] font-semibold text-[12.5px] flex items-center gap-2 cursor-pointer transition-all"
-                  style={{ background: 'rgba(5,150,105,.1)', borderColor: 'rgba(5,150,105,.3)', border: '1px solid', color: '#6ee7b7', fontFamily: 'inherit' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.18)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.1)'; }}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[15px] h-[15px] flex-shrink-0">
-                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" />
-                  </svg>
-                  One-Click Safe Share (LINE)
-                </button>
-                <div className="text-[11px] text-[#64748b] mt-1.5 pl-0.5">สร้าง Infographic ภาษาไทย-อังกฤษ เพื่อแจ้งเตือนครอบครัว</div>
-              </div>
-            </div>
-          </div>
-
           {/* PDPA notice */}
           <div
             className="col-span-2 rounded-[10px] p-[11px] px-[15px] text-xs text-[#1e40af] leading-[1.6] flex gap-[9px]"
             style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" className="flex-shrink-0 w-[15px] h-[15px] mt-0.5">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0110 0v4" />
             </svg>
             <span>
-              <strong>Automated Data Ephemerality:</strong> ข้อความและเนื้อหาทั้งหมดจะถูกลบออกจากระบบภายใน 5 นาที ไม่มีการเก็บข้อมูลส่วนบุคคล ปฏิบัติตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) พ.ศ. 2562
+              <strong>ความเป็นส่วนตัว:</strong> ข้อมูลที่คุณส่งมาถูกประมวลผลเพื่อวิเคราะห์เท่านั้น ไม่มีการจัดเก็บข้อความต้นฉบับหรือข้อมูลส่วนบุคคลใดๆ
+              ปฏิบัติตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) พ.ศ. 2562
             </span>
-          </div>
-
-          {/* Module navigation cards */}
-          <div className="col-span-2 grid grid-cols-2 gap-3">
-            {[
-              {
-                dot: '#f87171', title: 'Cyber Threat Tracing', sub: 'IP Geolocation · EXIF · Threat Map',
-                tag: 'FR2.6', tagClass: 'bg-[rgba(220,38,38,.12)] text-[#f87171] border-[rgba(220,38,38,.2)]',
-                onClick: onGoCyber,
-              },
-              {
-                dot: '#fbbf24', title: 'Threat Intel Center', sub: 'Honey-Token · ZKP Report · Crowd Intel',
-                tag: 'FR2.7', tagClass: 'bg-[rgba(217,119,6,.12)] text-[#d97706] border-[rgba(217,119,6,.2)]',
-                onClick: onGoIntel,
-              },
-            ].map((m) => (
-              <button
-                key={m.title}
-                onClick={m.onClick}
-                className="rounded-xl p-[14px] px-4 cursor-pointer flex items-center justify-between transition-all text-left"
-                style={{ background: '#0d1b2e', border: '1px solid rgba(255,255,255,0.07)', fontFamily: 'inherit' }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.18)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.transform = ''; }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: m.dot, boxShadow: `0 0 7px ${m.dot}` }} />
-                  <div>
-                    <div className="text-[13px] font-semibold text-[#f1f5f9]">{m.title}</div>
-                    <div className="text-[11px] text-[#64748b] mt-0.5">{m.sub}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-[10px] font-mono-ibm font-bold px-2 py-[2px] rounded border ${m.tagClass}`}>{m.tag}</span>
-                  <span className="text-[#64748b] text-base">›</span>
-                </div>
-              </button>
-            ))}
           </div>
         </div>
       </div>

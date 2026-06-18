@@ -2,8 +2,6 @@
 import { useState } from 'react';
 import InputPage from './components/InputPage';
 import ResultPage from './components/ResultPage';
-import CyberTracingPage from './components/CyberTracingPage';
-import ThreatIntelPage from './components/ThreatIntelPage';
 import LoadingOverlay from './components/LoadingOverlay';
 import Toast from './components/Toast';
 
@@ -13,18 +11,16 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
-  const [inputText, setInputText] = useState('');
 
   const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(''), 2200);
   };
 
-  const handleAnalyze = async (formData, textValue) => {
+  const handleAnalyze = async (formData) => {
     setLoading(true);
     setError('');
     setResult(null);
-    setInputText(textValue || '');
 
     try {
       const res = await fetch(
@@ -34,7 +30,7 @@ export default function App() {
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'เกิดข้อผิดพลาด');
+        throw new Error(err.error || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
       }
 
       const data = await res.json();
@@ -52,8 +48,13 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleCopy = (txt) => {
+    navigator.clipboard.writeText(txt).catch(() => {});
+    showToast('คัดลอกแล้ว');
+  };
+
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'DM Sans','IBM Plex Sans Thai',sans-serif" }}>
+    <div style={{ fontFamily: "'DM Sans','IBM Plex Sans Thai',sans-serif" }}>
       {loading && <LoadingOverlay />}
       {toast && <Toast message={toast} />}
 
@@ -64,16 +65,8 @@ export default function App() {
         <ResultPage
           result={result}
           onBack={() => goTo('input')}
-          onGoCyber={() => goTo('cyber')}
-          onGoIntel={() => goTo('intel')}
-          onCopy={(txt) => { navigator.clipboard.writeText(txt).catch(() => {}); showToast('คัดลอกแล้ว'); }}
+          onCopy={handleCopy}
         />
-      )}
-      {page === 'cyber' && (
-        <CyberTracingPage onBack={() => goTo('result')} onCopy={(txt) => { navigator.clipboard.writeText(txt).catch(() => {}); showToast('คัดลอกแล้ว'); }} />
-      )}
-      {page === 'intel' && (
-        <ThreatIntelPage onBack={() => goTo('result')} />
       )}
     </div>
   );
