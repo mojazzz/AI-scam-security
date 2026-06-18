@@ -1,40 +1,17 @@
-// backend/services/geminiService.js
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// เรียกใช้งานด้วย API Key เดิมของคุณ
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
-// ถอดเสียงด้วย Hugging Face Inference API (ฟรี ไม่จำกัด)
-async function transcribeWithHuggingFace(fileBuffer, mimetype) {
-  const HF_TOKEN = process.env.HF_API_KEY;
+// 🌟 เปลี่ยนมาใช้งานโมเดลฟรีเวอร์ชันล่าสุดตามที่มีใน Google AI Studio ของคุณ
+const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  const res = await fetch(
-    'https://api-inference.huggingface.co/models/openai/whisper-large-v3',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${HF_TOKEN}`,
-        'Content-Type': mimetype,
-      },
-      body: fileBuffer,
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.text();
-    // Model กำลัง load (cold start) — รอแล้วลองใหม่
-    if (res.status === 503) throw new Error('MODEL_LOADING');
-    throw new Error(`Hugging Face error: ${err}`);
-  }
-
-  const data = await res.json();
-  return data.text || '';
-}
-
-const buildPrompt = (inputText, inputType, urlSafetyResult) => {
-  // ถ้า Safe Browsing ยืนยันว่าอันตราย ให้บอก Gemini ด้วย
+/**
+ * ฟังก์ชันสร้าง Prompt ให้กับ AI ทำงานแยกแยะแบบ Agent ตามโครงสร้างระบบเดิมของคุณ
+ */
+const buildPrompt = (userInput, inputType, urlSafetyResult) => {
   const safeBrowsingNote = urlSafetyResult?.isMalicious
     ? `\n[หมายเหตุ: Google Safe Browsing ตรวจพบว่า URL นี้เป็นอันตราย ประเภท: ${urlSafetyResult.threats.join(', ')}]`
     : '';
@@ -77,10 +54,13 @@ const buildPrompt = (inputText, inputType, urlSafetyResult) => {
 ---
 ประเภทข้อมูล: ${inputType}${safeBrowsingNote}
 ข้อมูลที่ต้องวิเคราะห์:
-${inputText}
+${userInput}
 `;
 };
 
+/**
+ * ฟังก์ชันหลักในการวิเคราะห์ข้อมูล รองรับ Text, URL, Image และ Audio แบบ Multimodal
+ */
 export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyResult }) {
   const maxRetries = 3;
 
@@ -92,51 +72,47 @@ export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyR
       if (text) userInput = `ข้อความ: ${text}`;
       if (url)  userInput = `URL: ${url}`;
 
+      // 🛠️ การจัดการข้อมูลประเภทไฟล์ (รูปภาพ หรือ เสียง) ส่งตรงหา Gemini 3.5 Flash
       if (file) {
-        if (inputType === 'audio') {
-          // Hugging Face Whisper — ฟรี ไม่จำกัด
-          let transcript = '';
-          for (let t = 1; t <= 3; t++) {
-            try {
-              transcript = await transcribeWithHuggingFace(file.buffer, file.mimetype);
-              break;
-            } catch (e) {
-              if (e.message === 'MODEL_LOADING' && t < 3) {
-                // Model กำลัง warm up รอ 20 วินาที (cold start ปกติ)
-                console.log(`⏳ Whisper model loading... รอ 20s (attempt ${t}/3)`);
-                await new Promise(r => setTimeout(r, 20000));
-              } else throw e;
-            }
+        // แปลง Buffer ของไฟล์ดิบให้อยู่ในรูปแบบ Base64 string ตามที่คู่มือ Gemini กำหนด
+        const base64Data = file.buffer.toString('base64');
+        
+        parts.push({
+          inlineData: {
+            data: base64Data,
+            mimeType: file.mimetype // ส่งประเภทไฟล์ เช่น audio/mp3 หรือ image/png
           }
-          if (!transcript.trim()) throw new Error('ไม่สามารถถอดความเสียงได้');
-          userInput = `ข้อความที่ถอดจากเสียง: ${transcript}`;
+        });
+
+        // กำหนดคำสั่งเบื้องต้นให้ AI ทราบหน้าที่ตามประเภทสื่อที่ส่งไป
+        if (inputType === 'audio') {
+          userInput = 'นี่คือไฟล์เสียง กรุณาฟังเนื้อหาทั้งหมดอย่างละเอียด แล้วนำไปวิเคราะห์หาความเสี่ยงมิจฉาชีพ';
         } else {
-          // รูปภาพ — ส่งตรงไป Gemini ได้เลย
-          const base64 = file.buffer.toString('base64');
-          parts.push({ inlineData: { data: base64, mimeType: file.mimetype } });
-          userInput = 'นี่คือรูปภาพ กรุณาอ่านข้อความในภาพและวิเคราะห์';
+          userInput = 'นี่คือรูปภาพ กรุณาอ่านและถอดข้อความในภาพทั้งหมด แล้วนำไปวิเคราะห์หาความเสี่ยงมิจฉาชีพ';
         }
       }
 
+      // แนบส่วนของ Prompt หลักเข้าไปในชุดข้อมูลที่ต้องการส่ง
       parts.push({ text: buildPrompt(userInput, inputType || 'text', urlSafetyResult) });
 
+      // ส่งชุดข้อมูล (Multimodal) ไปประมวลผลที่เซิร์ฟเวอร์ Google
       const result = await model.generateContent({
         contents: [{ role: 'user', parts }],
       });
 
       const responseText = result.response.text();
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('AI ไม่ส่งข้อมูล JSON กลับมา');
+      if (!jsonMatch) throw new Error('AI ไม่ส่งข้อมูลโครงสร้าง JSON กลับมา');
 
       const parsed = JSON.parse(jsonMatch[0]);
 
-      // ถ้า Safe Browsing ยืนยันว่าอันตราย → บังคับ score ขั้นต่ำ 80
+      // ตรวจสอบความปลอดภัยเพิ่มเติมร่วมกับสิทธิ์ URL
       if (urlSafetyResult?.isMalicious && parsed.score < 80) {
         parsed.score = 85;
         parsed.level = 'red';
         parsed.levelText = 'อันตราย';
         parsed.indicators = [
-          `Google Safe Browsing: ${urlSafetyResult.threats.join(', ')}`,
+          `Google Safe Browsing 检测: ${urlSafetyResult.threats.join(', ')}`,
           ...(parsed.indicators || []),
         ];
       }
@@ -146,9 +122,10 @@ export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyR
     } catch (err) {
       console.log(`❌ Attempt ${attempt}/${maxRetries}:`, err.message);
 
+      // กรณีเจอปัญหา Overload หรือ Rate Limit ชั่วคราว ให้รอและลองใหม่
       if ((err.message.includes('503') || err.message.includes('429')) && attempt < maxRetries) {
         const wait = attempt * 2000;
-        console.log(`⏳ รอ ${wait / 1000}s แล้วลองใหม่...`);
+        console.log(`⏳ กำลังรอระบบว่าง ${wait / 1000} วินาที...`);
         await new Promise(r => setTimeout(r, wait));
         continue;
       }

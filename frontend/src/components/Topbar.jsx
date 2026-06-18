@@ -1,6 +1,5 @@
 // frontend/src/components/Topbar.jsx
 
-// ── Shield icon
 const ShieldIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-[18px] h-[18px]">
     <path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z" />
@@ -13,7 +12,7 @@ const ArrowLeft = () => (
   </svg>
 );
 
-export function Topbar({ onBack, backLabel = 'กลับ', rightSlot }) {
+export function Topbar({ onBack, backLabel = 'กลับ' }) {
   return (
     <nav
       className="h-14 px-7 flex items-center justify-between sticky top-0 z-[90]"
@@ -23,8 +22,10 @@ export function Topbar({ onBack, backLabel = 'กลับ', rightSlot }) {
         {onBack && (
           <button
             onClick={onBack}
-            className="flex items-center gap-1.5 text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-[7px] border cursor-pointer transition-all hover:text-[#f1f5f9] hover:bg-[#1e3050]"
+            className="flex items-center gap-1.5 text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-[7px] border cursor-pointer transition-all"
             style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'transparent', fontFamily: 'inherit' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#1e3050'; e.currentTarget.style.color = '#f1f5f9'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
           >
             <ArrowLeft />
             {backLabel}
@@ -43,23 +44,15 @@ export function Topbar({ onBack, backLabel = 'กลับ', rightSlot }) {
       </div>
 
       <div className="flex items-center gap-2.5">
-        {rightSlot}
-        <StatusPill color="green" label="AI Engine Online" />
+        <div
+          className="flex items-center gap-[7px] text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-full"
+          style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full led-green flex-shrink-0" />
+          AI Engine Online
+        </div>
       </div>
     </nav>
-  );
-}
-
-export function StatusPill({ color = 'green', label }) {
-  const dotClass = color === 'green' ? 'led-green' : color === 'blue' ? 'led-blue' : 'led-red';
-  return (
-    <div
-      className="flex items-center gap-[7px] text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-full cursor-pointer transition-all"
-      style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}
-    >
-      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dotClass}`} />
-      {label}
-    </div>
   );
 }
 

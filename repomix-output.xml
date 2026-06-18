@@ -40,43 +40,45 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-backend/
-  routes/
-    analyze.js
-  services/
-    geminiService.js
-    safeBrowsingService.js
-  .gitignore
-  index.js
-  package.json
-frontend/
-  public/
-    favicon.svg
-    icons.svg
-  src/
-    assets/
-      hero.png
-      react.svg
-      vite.svg
-    components/
-      InputPanel.jsx
-      ResultDashboard.jsx
-    App.css
-    App.jsx
-    index.css
-    main.jsx
-  .gitignore
-  eslint.config.js
-  index.html
-  package.json
-  README.md
-  vite.config.js
-page.html
+backend/.gitignore
+backend/index.js
+backend/package.json
+backend/routes/analyze.js
+backend/services/geminiService.js
+backend/services/safeBrowsingService.js
+frontend/eslint.config.js
+frontend/.gitignore
+frontend/index.html
+frontend/package.json
+frontend/public/favicon.svg
+frontend/public/icons.svg
+frontend/README.md
+frontend/src/App.css
+frontend/src/App.jsx
+frontend/src/assets/hero.png
+frontend/src/assets/react.svg
+frontend/src/assets/vite.svg
+frontend/src/components/CyberTracingPage.jsx
+frontend/src/components/InputPage.jsx
+frontend/src/components/LoadingOverlay.jsx
+frontend/src/components/ResultPage.jsx
+frontend/src/components/ThreatIntelPage.jsx
+frontend/src/components/Toast.jsx
+frontend/src/components/Topbar.jsx
+frontend/src/index.css
+frontend/src/main.jsx
+frontend/vite.config.js
 README.md
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="backend/.gitignore">
+node_modules/
+.env
+uploads/
+</file>
 
 <file path="backend/services/safeBrowsingService.js">
 // backend/services/safeBrowsingService.js
@@ -121,7 +123,57 @@ export async function checkUrlSafety(url) {
 }
 </file>
 
-<file path="backend/.gitignore">
+<file path="frontend/eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+  },
+])
+</file>
+
+<file path="frontend/.gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# AAA
 node_modules/
 .env
 uploads/
@@ -158,181 +210,23 @@ uploads/
 </svg>
 </file>
 
-<file path="frontend/src/assets/react.svg">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
-</file>
+<file path="frontend/README.md">
+# React + Vite
 
-<file path="frontend/src/assets/vite.svg">
-<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
-</file>
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-<file path="frontend/src/components/InputPanel.jsx">
-// frontend/src/components/InputPanel.jsx
-import { useState, useRef } from 'react';
+Currently, two official plugins are available:
 
-const INPUT_TYPES = [
-  { id: 'text', label: '💬 ข้อความ', placeholder: 'วางข้อความ SMS, LINE หรืออีเมลที่สงสัย...' },
-  { id: 'url',  label: '🔗 ลิงก์',   placeholder: 'https://example.com/suspicious-link' },
-  { id: 'image', label: '🖼️ รูปภาพ', placeholder: null },
-  { id: 'audio', label: '🎙️ เสียง',  placeholder: null },
-];
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-export default function InputPanel({ onAnalyze, loading }) {
-  const [activeType, setActiveType] = useState('text');
-  const [textValue, setTextValue] = useState('');
-  const [file, setFile] = useState(null);
-  const fileRef = useRef();
+## React Compiler
 
-  const handleSubmit = () => {
-    const fd = new FormData();
-    fd.append('inputType', activeType);
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-    if (activeType === 'text') fd.append('text', textValue);
-    else if (activeType === 'url') fd.append('url', textValue);
-    else if (file) fd.append('file', file);
-    else return;
+## Expanding the ESLint configuration
 
-    onAnalyze(fd);
-  };
-
-  const activeConfig = INPUT_TYPES.find(t => t.id === activeType);
-
-  return (
-    <div className="bg-gray-900 rounded-2xl border border-gray-800 overflow-hidden">
-      {/* Tab switcher */}
-      <div className="flex border-b border-gray-800">
-        {INPUT_TYPES.map(type => (
-          <button
-            key={type.id}
-            onClick={() => { setActiveType(type.id); setTextValue(''); setFile(null); }}
-            className={`flex-1 py-3 text-sm font-medium transition-colors ${
-              activeType === type.id
-                ? 'bg-gray-800 text-white border-b-2 border-blue-500'
-                : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            {type.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Input area */}
-      <div className="p-6 space-y-4">
-        {(activeType === 'text' || activeType === 'url') && (
-          <textarea
-            value={textValue}
-            onChange={e => setTextValue(e.target.value)}
-            placeholder={activeConfig.placeholder}
-            rows={activeType === 'text' ? 5 : 2}
-            className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-blue-500 resize-none"
-          />
-        )}
-
-        {(activeType === 'image' || activeType === 'audio') && (
-          <div
-            onClick={() => fileRef.current.click()}
-            className="border-2 border-dashed border-gray-700 rounded-xl p-10 text-center cursor-pointer hover:border-gray-500 transition-colors"
-          >
-            <p className="text-gray-400 text-sm">
-              {file ? `✅ ${file.name}` : `คลิกเพื่ออัปโหลด${activeType === 'image' ? 'รูปภาพ (สูงสุด 5MB)' : 'ไฟล์เสียง (สูงสุด 2 นาที)'}`}
-            </p>
-            <input
-              ref={fileRef}
-              type="file"
-              accept={activeType === 'image' ? 'image/*' : 'audio/*'}
-              className="hidden"
-              onChange={e => setFile(e.target.files[0])}
-            />
-          </div>
-        )}
-
-        <button
-          onClick={handleSubmit}
-          disabled={loading || (!textValue && !file)}
-          className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-colors"
-        >
-          {loading ? '🔍 กำลังวิเคราะห์...' : '🛡️ ตรวจสอบเดี๋ยวนี้'}
-        </button>
-      </div>
-    </div>
-  );
-}
-</file>
-
-<file path="frontend/src/components/ResultDashboard.jsx">
-// frontend/src/components/ResultDashboard.jsx
-
-const LEVEL_CONFIG = {
-  green:   { bg: 'bg-green-950',  border: 'border-green-700',  text: 'text-green-400',  bar: 'bg-green-500' },
-  yellow:  { bg: 'bg-yellow-950', border: 'border-yellow-700', text: 'text-yellow-400', bar: 'bg-yellow-500' },
-  red:     { bg: 'bg-red-950',    border: 'border-red-700',    text: 'text-red-400',    bar: 'bg-red-500' },
-  unknown: { bg: 'bg-gray-900',   border: 'border-gray-700',   text: 'text-gray-400',   bar: 'bg-gray-500' },
-};
-
-export default function ResultDashboard({ result }) {
-  const { score, level, levelText, indicators, reason, recommendation } = result;
-  const cfg = LEVEL_CONFIG[level] || LEVEL_CONFIG.unknown;
-
-  return (
-    <div className={`rounded-2xl border ${cfg.bg} ${cfg.border} overflow-hidden`}>
-      {/* Score Header */}
-      <div className="px-6 py-6 border-b border-gray-800">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">คะแนนความเสี่ยง</p>
-            <p className={`text-5xl font-bold ${cfg.text}`}>{score}</p>
-          </div>
-          <div className={`px-5 py-2 rounded-full border ${cfg.border} ${cfg.text} font-semibold text-lg`}>
-            {levelText}
-          </div>
-        </div>
-
-        {/* Risk Bar */}
-        <div className="w-full bg-gray-800 rounded-full h-2">
-          <div
-            className={`h-2 rounded-full transition-all duration-700 ${cfg.bar}`}
-            style={{ width: `${score}%` }}
-          />
-        </div>
-        <div className="flex justify-between text-xs text-gray-600 mt-1">
-          <span>0 ปลอดภัย</span>
-          <span>50</span>
-          <span>100 อันตราย</span>
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="px-6 py-5 space-y-5">
-        {/* Indicators พบ */}
-        {indicators?.length > 0 && (
-          <div>
-            <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">สัญญาณที่พบ</p>
-            <ul className="space-y-1">
-              {indicators.map((item, i) => (
-                <li key={i} className={`text-sm flex gap-2 ${cfg.text}`}>
-                  <span>⚠️</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* เหตุผล */}
-        <div>
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">เหตุผล</p>
-          <p className="text-sm text-gray-200 leading-relaxed">{reason}</p>
-        </div>
-
-        {/* คำแนะนำ */}
-        <div className={`rounded-xl border p-4 ${cfg.bg} ${cfg.border}`}>
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">คำแนะนำ</p>
-          <p className={`text-sm font-medium ${cfg.text} leading-relaxed`}>{recommendation}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 </file>
 
 <file path="frontend/src/App.css">
@@ -522,1477 +416,1351 @@ export default function ResultDashboard({ result }) {
 }
 </file>
 
-<file path="frontend/src/index.css">
-@import "tailwindcss";
-
-/* หากต้องการเขียน CSS เพิ่มเติม สามารถเขียนต่อด้านล่างนี้ได้เลย */
-body {
-  font-family: 'Inter', sans-serif;
-}
+<file path="frontend/src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
 </file>
 
-<file path="frontend/src/main.jsx">
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+<file path="frontend/src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
 </file>
 
-<file path="frontend/.gitignore">
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+<file path="frontend/src/components/CyberTracingPage.jsx">
+// frontend/src/components/CyberTracingPage.jsx
+import { Topbar } from './Topbar';
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# AAA
-node_modules/
-.env
-uploads/
-</file>
-
-<file path="frontend/eslint.config.js">
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      globals: globals.browser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
-    },
-  },
-])
-</file>
-
-<file path="frontend/index.html">
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
-</file>
-
-<file path="frontend/README.md">
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-</file>
-
-<file path="frontend/vite.config.js">
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
+const MOCK_DATA = {
+  url: 'https://scam-bank-verify.com/th/login',
+  domain: 'scam-bank-verify.com',
+  registrar: 'NameCheap, Inc.',
+  registeredDate: '2 วันที่แล้ว',
+  expiryDate: '1 ปี',
+  nameservers: 'ns1.cloudflare.com',
+  ip: '185.220.101.47',
+  country: '🇷🇺 Russia — Moscow',
+  coords: '55.7558° N, 37.6176° E',
+  domainAge: '2',
+  ports: [
+    { num: '443', name: 'HTTPS', status: 'safe' },
+    { num: '80', name: 'HTTP', status: 'warn' },
+    { num: '8080', name: 'Proxy', status: 'warn' },
+    { num: '3389', name: 'RDP', status: 'danger' },
   ],
-})
+  hops: [
+    { city: 'Bangkok', role: 'Origin', color: '#34d399' },
+    { city: 'Singapore', role: 'VPN Node', color: '#fbbf24' },
+    { city: 'Frankfurt', role: 'Relay', color: '#fbbf24' },
+    { city: 'Moscow', role: 'Threat', color: '#f87171' },
+  ],
+};
+
+function DarkCard({ label, badge, children }) {
+  return (
+    <div className="rounded-xl p-[14px] px-4 mb-[14px] last:mb-0" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="flex justify-between items-center mb-3">
+        <div className="text-[10.5px] font-mono-ibm tracking-[.1em] text-[#64748b] uppercase">{label}</div>
+        {badge && (
+          <div className="text-[10px] font-mono-ibm font-bold px-[9px] py-[2px] rounded-[5px]" style={{ background: 'rgba(220,38,38,.12)', color: '#f87171', border: '1px solid rgba(220,38,38,.25)' }}>
+            {badge}
+          </div>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function MetaRow({ label, value, color }) {
+  return (
+    <div className="flex items-baseline py-[7.5px] border-b last:border-0 text-xs" style={{ borderColor: 'rgba(255,255,255,.04)' }}>
+      <div className="text-[#64748b] w-[148px] flex-shrink-0">{label}</div>
+      <div className="font-mono-ibm text-[11.5px] flex-1" style={{ color: color || '#f1f5f9' }}>{value}</div>
+    </div>
+  );
+}
+
+function MapCanvas() {
+  const dots = [
+    { x: '10%', y: '62%', color: '#34d399', label: 'Bangkok' },
+    { x: '72%', y: '58%', color: '#fbbf24', label: 'Singapore' },
+    { x: '45%', y: '28%', color: '#fbbf24', label: 'Frankfurt' },
+    { x: '56%', y: '22%', color: '#f87171', label: 'Moscow' },
+  ];
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="px-[14px] py-2.5 flex justify-between items-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div className="text-[11px] font-mono-ibm font-bold text-[#f1f5f9] tracking-[.08em] uppercase">Threat Origin Map</div>
+        <div className="flex items-center gap-[5px] text-[10px] font-mono-ibm text-[#34d399]">
+          <span className="w-[5px] h-[5px] rounded-full led-green" />
+          LIVE
+        </div>
+      </div>
+      <div className="h-[180px] relative overflow-hidden" style={{ background: '#07140e' }}>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(16,185,129,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,.06) 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+          }}
+        />
+        {dots.map((d, i) => (
+          <div key={i}>
+            <div
+              className="absolute w-[7px] h-[7px] rounded-full"
+              style={{ left: d.x, top: d.y, transform: 'translate(-50%,-50%)', background: d.color, boxShadow: `0 0 10px ${d.color}` }}
+            />
+            <div
+              className="absolute font-mono-ibm text-[9px] whitespace-nowrap"
+              style={{ left: d.x, top: `calc(${d.y} + 10px)`, transform: 'translateX(-50%)', color: 'rgba(255,255,255,.5)' }}
+            >
+              {d.label}
+            </div>
+          </div>
+        ))}
+        {/* Connection line */}
+        <div
+          className="absolute h-[1px]"
+          style={{ left: '10%', top: '62%', width: '46%', background: 'rgba(248,113,113,.3)', transformOrigin: 'left center', transform: 'rotate(-40deg)' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function RoutingCard() {
+  return (
+    <div className="rounded-xl p-[13px] px-[15px]" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="flex justify-between text-[10.5px] font-mono-ibm text-[#64748b] mb-[13px] tracking-[.08em] uppercase">
+        <span>Network Routing</span>
+        <span>4 HOPS DETECTED</span>
+      </div>
+      <div className="flex items-end pb-0.5">
+        {MOCK_DATA.hops.map((h, i) => (
+          <div key={h.city} className="flex items-end">
+            <div className="text-center flex-1">
+              <div className="w-[11px] h-[11px] rounded-full mx-auto mb-1.5" style={{ background: h.color, boxShadow: `0 0 6px ${h.color}` }} />
+              <div className="font-mono-ibm text-[10px] font-semibold text-[#f1f5f9]">{h.city}</div>
+              <div className="text-[9.5px] text-[#64748b] mt-0.5">{h.role}</div>
+            </div>
+            {i < MOCK_DATA.hops.length - 1 && (
+              <div className="text-[#64748b] text-[13px] pb-4 flex-shrink-0 w-5 text-center">›</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function CyberTracingPage({ onBack, onCopy }) {
+  const portColor = { safe: '#34d399', warn: '#fbbf24', danger: '#f87171' };
+  const portBg = { safe: 'rgba(5,150,105,.12)', warn: 'rgba(217,119,6,.12)', danger: 'rgba(220,38,38,.12)' };
+  const portBorder = { safe: 'rgba(5,150,105,.25)', warn: 'rgba(217,119,6,.25)', danger: 'rgba(220,38,38,.25)' };
+
+  return (
+    <div className="fade-in min-h-screen" style={{ background: '#0d1b2e' }}>
+      <Topbar onBack={onBack} backLabel="กลับ" />
+
+      {/* Cyber sub-bar */}
+      <div
+        className="px-6 py-2.5 flex items-center justify-between"
+        style={{ background: '#0a1520', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-7 h-7 rounded-full border-[1.5px] flex items-center justify-center spin-slow"
+              style={{ borderColor: '#0891b2' }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" strokeWidth="2" className="w-[14px] h-[14px]">
+                <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-[#f1f5f9] font-mono-ibm">RECON ENGINE</div>
+              <div className="text-[10px] text-[#64748b]">OSINT · WHOIS · Port Scan</div>
+            </div>
+          </div>
+          <div
+            className="breathe text-[10.5px] font-mono-ibm font-bold tracking-[.08em] px-3 py-1 rounded-full text-[#34d399]"
+            style={{ background: 'rgba(5,150,105,.12)', border: '1px solid rgba(5,150,105,.3)' }}
+          >
+            ACTIVE SCAN
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="font-mono-ibm text-[11.5px] font-bold px-3 py-[5px] rounded-[7px]" style={{ background: 'rgba(220,38,38,.1)', border: '1px solid rgba(220,38,38,.3)', color: '#fca5a5' }}>
+            THREAT: HIGH
+          </div>
+          <div className="font-mono-ibm text-[11px] px-3 py-[5px] rounded-[7px] text-[#94a3b8]" style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}>
+            Engines: <strong className="text-[#d97706]">47</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* Layout */}
+      <div className="grid min-h-[calc(100vh-170px)]" style={{ gridTemplateColumns: '420px 1fr' }}>
+        {/* Left panel */}
+        <div className="p-[18px] px-5 overflow-y-auto" style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}>
+          <DarkCard label="Suspicious URL / Domain" badge="HIGH RISK">
+            <div className="flex items-center gap-2 rounded-lg px-3 py-[9px] mb-2.5" style={{ background: '#0d1b2e' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" className="w-[13px] h-[13px] flex-shrink-0">
+                <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+              </svg>
+              <span className="font-mono-ibm text-xs text-[#f87171] flex-1 break-all">{MOCK_DATA.url}</span>
+              <button onClick={() => onCopy(MOCK_DATA.url)} className="text-[#64748b] hover:text-[#f1f5f9] text-xs px-1 py-[2px] rounded" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>📋</button>
+            </div>
+            {/* VirusTotal bar */}
+            <div className="mt-1.5">
+              <div className="flex justify-between text-[10.5px] font-mono-ibm text-[#64748b] mb-[5px]">
+                <span>VirusTotal Score</span>
+                <span className="text-[#f87171] font-bold">44/72 Engines</span>
+              </div>
+              <div className="h-[5px] rounded-[3px] relative" style={{ background: 'linear-gradient(90deg, #22c55e 0%, #f59e0b 55%, #ef4444 100%)' }}>
+                <div className="absolute top-[-4px] w-[13px] h-[13px] rounded-full bg-white" style={{ right: '5%', border: '2px solid #ef4444', boxShadow: '0 0 8px rgba(239,68,68,.5)' }} />
+              </div>
+              <div className="flex justify-between font-mono-ibm text-[10px] text-[#64748b] mt-1">
+                <span>Clean</span><span>Suspicious</span><span>Malicious</span>
+              </div>
+            </div>
+          </DarkCard>
+
+          <DarkCard label="WHOIS Registration Data">
+            <MetaRow label="Domain" value={MOCK_DATA.domain} color="#f87171" />
+            <MetaRow label="Registrar" value={MOCK_DATA.registrar} />
+            <MetaRow label="Registered" value={MOCK_DATA.registeredDate} color="#fbbf24" />
+            <MetaRow label="Expiry" value={MOCK_DATA.expiryDate} />
+            <MetaRow label="Name Servers" value={MOCK_DATA.nameservers} />
+            {/* Geo accent */}
+            <div className="rounded-[9px] p-[11px] px-[13px] mt-[9px] flex justify-between items-center" style={{ background: 'rgba(217,119,6,.08)', border: '1px solid rgba(217,119,6,.2)' }}>
+              <div>
+                <div className="text-sm font-bold text-[#d97706]">{MOCK_DATA.country}</div>
+                <div className="font-mono-ibm text-[10.5px] text-[#64748b] mt-[3px]">{MOCK_DATA.coords}</div>
+              </div>
+              <div className="rounded-lg px-3 py-1.5 text-center" style={{ background: 'rgba(220,38,38,.12)', border: '1px solid rgba(220,38,38,.25)' }}>
+                <span className="font-mono-ibm text-[20px] font-extrabold text-[#f87171] block">{MOCK_DATA.domainAge}</span>
+                <span className="text-[9.5px] font-mono-ibm text-[#f87171] mt-0.5">DAYS OLD</span>
+              </div>
+            </div>
+          </DarkCard>
+
+          <DarkCard label="Open Port Scan">
+            <div className="grid grid-cols-2 gap-[7px] mt-2.5">
+              {MOCK_DATA.ports.map((p) => (
+                <div key={p.num} className="rounded-lg p-2 px-2.5" style={{ background: portBg[p.status], border: `1px solid ${portBorder[p.status]}` }}>
+                  <div className="font-mono-ibm text-sm font-bold" style={{ color: portColor[p.status] }}>:{p.num}</div>
+                  <div className="text-[10.5px] mt-0.5" style={{ color: `${portColor[p.status]}99` }}>{p.name}</div>
+                </div>
+              ))}
+            </div>
+          </DarkCard>
+        </div>
+
+        {/* Right panel */}
+        <div className="p-[18px] px-5 flex flex-col gap-[14px]">
+          <MapCanvas />
+          <RoutingCard />
+
+          {/* Conclusion */}
+          <div className="rounded-xl p-[14px] px-4" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="flex justify-between items-center mb-3">
+              <div>
+                <div className="text-[13px] font-bold text-[#f1f5f9]">Recon Conclusion</div>
+                <div className="text-[11px] text-[#64748b] mt-0.5">Automated OSINT Summary</div>
+              </div>
+              <div className="text-[10px] font-mono-ibm font-bold px-[9px] py-[2px] rounded-[5px]" style={{ background: 'rgba(5,150,105,.12)', border: '1px solid rgba(5,150,105,.25)', color: '#34d399' }}>
+                94.7% CONFIDENCE
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-[7px] mb-[11px]">
+              {['Domain จดทะเบียนใหม่มาก (2 วัน)', 'Server ตั้งอยู่ในประเทศรัสเซีย', 'Port 3389 เปิดอยู่ (RDP Backdoor)', 'NameServer ใช้ Cloudflare ซ่อน IP จริง'].map((t, i) => (
+                <div key={i} className="rounded-lg p-[9px] px-[11px] text-[11.5px] text-[#94a3b8] leading-[1.45] flex gap-[7px] items-start" style={{ background: '#0d1b2e', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div className="w-[5px] h-[5px] rounded-full flex-shrink-0 mt-[5px]" style={{ background: i < 2 ? '#34d399' : '#fbbf24' }} />
+                  {t}
+                </div>
+              ))}
+            </div>
+            <div className="rounded-lg p-[11px] px-[13px] text-xs text-[#94a3b8] leading-[1.65] font-mono-ibm mb-[11px]" style={{ background: 'rgba(0,0,0,.25)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              ระบบ OSINT ยืนยันว่า <strong className="text-[#f1f5f9]">scam-bank-verify.com</strong> เป็น <strong className="text-[#f87171]">phishing domain ที่ Active อยู่</strong> — จดโดเมนวันที่ 2024-11-01 ผ่าน bulletproof hosting ในรัสเซีย พบ RDP backdoor เปิดอยู่ แนะนำรายงานต่อ ETDA และ NCSA ทันที
+            </div>
+            <button
+              className="w-full font-bold text-[13px] text-white rounded-[9px] p-[11px] flex items-center justify-center gap-[7px] cursor-pointer transition-all"
+              style={{ background: '#2563eb', border: 'none', fontFamily: 'inherit', boxShadow: '0 2px 10px rgba(37,99,235,.35)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#1d4ed8'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#2563eb'; }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[14px] h-[14px]">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Export OSINT Report (.pdf)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 </file>
 
-<file path="page.html">
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scam Detector — PDPA Compliant</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --navy:        #0d1b2e;
-  --navy-mid:    #152236;
-  --navy-card:   #1a2b40;
-  --navy-light:  #1e3050;
-  --border:      rgba(255,255,255,0.07);
-  --blue:        #2563eb;
-  --blue-dim:    rgba(37,99,235,0.12);
-  --teal:        #0891b2;
-  --green:       #059669;
-  --green-dim:   rgba(5,150,105,0.12);
-  --red:         #dc2626;
-  --red-dim:     rgba(220,38,38,0.12);
-  --amber:       #d97706;
-  --amber-dim:   rgba(217,119,6,0.12);
-  --text-1:      #f1f5f9;
-  --text-2:      #94a3b8;
-  --text-3:      #64748b;
-  --page-bg:     #eef2f7;
-  --card-bg:     #ffffff;
-  --font:        'DM Sans', 'IBM Plex Sans Thai', sans-serif;
-  --mono:        'IBM Plex Mono', monospace;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: var(--font);
-  background: var(--page-bg);
-  color: var(--navy);
-  font-size: 14px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── TOPBAR ─────────────────────────────── */
-.topbar {
-  background: var(--navy);
-  height: 56px;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 90;
-  border-bottom: 1px solid var(--border);
-}
-.tb-brand { display: flex; align-items: center; gap: 11px; }
-.tb-logomark {
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  background: var(--blue);
-  display: flex; align-items: center; justify-content: center;
-}
-.tb-logomark svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2; }
-.tb-name { font-size: 14px; font-weight: 700; color: var(--text-1); letter-spacing: 0.03em; }
-.tb-sub  { font-size: 11px; color: var(--text-3); letter-spacing: 0.01em; }
-.tb-right { display: flex; align-items: center; gap: 10px; }
-.tb-pill {
-  display: flex; align-items: center; gap: 7px;
-  background: var(--navy-light);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  padding: 5px 14px;
-  border-radius: 99px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: border-color .2s;
-}
-.tb-pill:hover { border-color: rgba(255,255,255,0.18); }
-.led {
-  width: 6px; height: 6px; border-radius: 50%;
-  flex-shrink: 0;
-}
-.led-green { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
-.led-blue  { background: #60a5fa; box-shadow: 0 0 5px #60a5fa; }
-.led-red   { background: #f87171; box-shadow: 0 0 5px #f87171; }
-.back-btn {
-  display: flex; align-items: center; gap: 6px;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-2);
-  padding: 5px 14px;
-  border-radius: 7px;
-  font-size: 12px; font-family: var(--font);
-  cursor: pointer; transition: all .2s;
-}
-.back-btn:hover { background: var(--navy-light); color: var(--text-1); }
-
-/* ── STATUSBAR ──────────────────────────── */
-.statusbar {
-  background: var(--navy-mid);
-  padding: 6px 28px;
-  display: flex; align-items: center; gap: 28px;
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-.s-tag {
-  font-size: 11px; color: var(--text-3);
-  font-family: var(--mono);
-  display: flex; align-items: center; gap: 5px;
-}
-.s-dot { width: 5px; height: 5px; border-radius: 50%; }
-.s-dot-g { background: #22c55e; }
-.s-dot-r { background: #f87171; }
-.s-dot-y { background: #fbbf24; }
-.s-dot-b { background: #60a5fa; }
-
-/* ── PAGE SYSTEM ────────────────────────── */
-.page { display: none; }
-.page.active { display: block; animation: fadeIn .25s ease; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-
-/* ════════════════════════════════════════
-   PAGE 1 — INPUT
-════════════════════════════════════════ */
-.p-input { background: var(--page-bg); min-height: calc(100vh - 90px); padding: 44px 24px; }
-
-.input-shell {
-  max-width: 820px; margin: 0 auto;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
-  overflow: hidden;
-}
-.input-header {
-  background: var(--navy);
-  padding: 13px 22px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.input-header-label {
-  font-size: 11px; font-family: var(--mono); font-weight: 600;
-  letter-spacing: 0.1em; color: var(--text-2);
-  display: flex; align-items: center; gap: 10px;
-}
-.hdr-indicators { display: flex; gap: 5px; }
-.hdr-ind {
-  width: 9px; height: 9px; border-radius: 50%;
-}
-.hdr-ind-a { background: var(--blue); }
-.hdr-ind-b { background: var(--teal); opacity: .5; }
-.input-header-hint { font-size: 11px; color: var(--text-3); }
-
-.input-body { padding: 24px 24px 22px; }
-
-.type-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 22px; }
-.type-tile {
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px 12px;
-  cursor: pointer;
-  background: #fafbfd;
-  transition: border-color .2s, background .2s, box-shadow .2s;
-}
-.type-tile:hover { border-color: #93c5fd; background: #f0f7ff; }
-.type-tile.sel {
-  border-color: var(--blue);
-  background: #eff6ff;
-  box-shadow: 0 0 0 3px rgba(37,99,235,.08);
-}
-.tile-icon {
-  width: 28px; height: 28px; margin-bottom: 9px;
-  color: #94a3b8;
-}
-.type-tile.sel .tile-icon { color: var(--blue); }
-.tile-icon svg { width: 100%; height: 100%; }
-.tile-name { font-size: 12.5px; font-weight: 600; color: #1e293b; }
-.type-tile.sel .tile-name { color: var(--blue); }
-.tile-sub  { font-size: 11px; color: #94a3b8; margin-top: 2px; }
-
-.field-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
-.field-row label { font-size: 12.5px; font-weight: 600; color: #334155; }
-.char-ct { font-family: var(--mono); font-size: 11px; color: #94a3b8; }
-
-textarea.main-ta {
-  width: 100%; min-height: 130px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 11px;
-  padding: 14px 16px;
-  font-family: var(--font); font-size: 13.5px; color: #334155;
-  resize: vertical; background: #fafbfd; outline: none;
-  transition: border-color .2s, background .2s;
-  line-height: 1.65;
-}
-textarea.main-ta:focus { border-color: #93c5fd; background: #fff; }
-textarea.main-ta::placeholder { color: #b0bec5; }
-
-.ta-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
-.sup-note { font-size: 11.5px; color: #64748b; display: flex; align-items: center; gap: 5px; }
-.sup-note svg { width: 13px; height: 13px; }
-.sample-row { display: flex; gap: 6px; }
-.sample-btn {
-  background: #f1f5f9; border: 1.5px solid #e2e8f0;
-  color: #475569; border-radius: 7px; padding: 5px 13px;
-  font-size: 11.5px; cursor: pointer; transition: all .2s;
-  font-family: var(--font);
-}
-.sample-btn:hover { background: #e2e8f0; }
-
-.analyze-btn {
-  width: 100%; margin-top: 20px;
-  background: var(--blue); color: #fff;
-  border: none; border-radius: 11px;
-  padding: 16px; font-size: 15px; font-weight: 700;
-  cursor: pointer; font-family: var(--font);
-  display: flex; align-items: center; justify-content: center; gap: 9px;
-  transition: background .2s, transform .15s, box-shadow .2s;
-  box-shadow: 0 3px 18px rgba(37,99,235,.3);
-  letter-spacing: .01em;
-}
-.analyze-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 5px 24px rgba(37,99,235,.4); }
-.analyze-btn:active { transform: translateY(0); }
-.analyze-btn svg { width: 17px; height: 17px; }
-
-/* ════════════════════════════════════════
-   PAGE 2 — RESULT
-════════════════════════════════════════ */
-.p-result { background: var(--page-bg); min-height: calc(100vh - 90px); }
-
-.hero-band {
-  background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
-  padding: 28px 28px 32px;
-  display: flex; gap: 28px; align-items: flex-start;
-  position: relative; overflow: hidden;
-}
-.hero-band::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    rgba(255,255,255,.015) 0, rgba(255,255,255,.015) 1px,
-    transparent 1px, transparent 14px
-  );
-  pointer-events: none;
-}
-
-.score-block { flex-shrink: 0; position: relative; z-index: 1; }
-.score-label { font-size: 10px; font-family: var(--mono); letter-spacing: .1em; color: rgba(255,255,255,.45); text-transform: uppercase; text-align: center; margin-bottom: 7px; }
-.score-box {
-  width: 130px; height: 130px;
-  background: rgba(0,0,0,.22);
-  border: 1.5px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.score-num  { font-size: 50px; font-weight: 800; color: #fff; line-height: 1; font-family: var(--mono); }
-.score-denom { font-size: 11px; color: rgba(255,255,255,.45); font-family: var(--mono); }
-.score-pips { display: flex; gap: 3px; margin-top: 9px; }
-.pip { width: 10px; height: 4px; border-radius: 2px; background: rgba(255,255,255,.18); }
-.pip.on { background: rgba(255,255,255,.75); }
-.pip.hi { background: #fff; }
-
-.hero-content { flex: 1; position: relative; z-index: 1; min-width: 0; }
-.analysis-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.22);
-  color: rgba(255,255,255,.9);
-  font-size: 10.5px; font-family: var(--mono); font-weight: 600;
-  letter-spacing: .1em; border-radius: 99px; padding: 3px 12px;
-  margin-bottom: 12px;
-}
-.analysis-tag .tag-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; }
-.hero-title { font-size: 24px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 6px; }
-.hero-sub   { font-size: 12.5px; color: rgba(255,255,255,.55); margin-bottom: 18px; font-family: var(--mono); letter-spacing: .05em; }
-
-.agent-panel {
-  background: rgba(0,0,0,.18);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 10px;
-  padding: 13px 16px;
-}
-.agent-panel-title { font-size: 10px; font-family: var(--mono); letter-spacing: .12em; color: rgba(255,255,255,.4); text-transform: uppercase; margin-bottom: 11px; }
-.agent-row { margin-bottom: 9px; }
-.agent-row:last-child { margin-bottom: 0; }
-.agent-meta { display: flex; justify-content: space-between; font-size: 11.5px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
-.agent-pct { font-family: var(--mono); font-weight: 600; color: #fff; }
-.prog-track { height: 4px; background: rgba(255,255,255,.12); border-radius: 2px; overflow: hidden; }
-.prog-fill  { height: 100%; border-radius: 2px; background: rgba(255,255,255,.55); transition: width 1s ease; }
-
-/* result grid */
-.result-grid { padding: 22px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-.r-card {
-  background: var(--card-bg);
-  border-radius: 13px;
-  padding: 18px 18px;
-  box-shadow: 0 1px 8px rgba(0,0,0,.06);
-}
-.r-card-title {
-  font-size: 11px; font-family: var(--mono); font-weight: 600;
-  letter-spacing: .1em; color: var(--text-3); text-transform: uppercase;
-  margin-bottom: 14px; padding-bottom: 10px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.xai-item {
-  display: flex; gap: 11px; padding: 9px 0;
-  border-bottom: 1px solid #f8fafc; font-size: 12.5px; color: #334155; line-height: 1.55;
-}
-.xai-item:last-child { border-bottom: none; padding-bottom: 0; }
-.xai-n {
-  flex-shrink: 0; width: 20px; height: 20px;
-  border-radius: 5px; background: #eff6ff;
-  font-size: 10px; font-weight: 700; color: var(--blue);
-  font-family: var(--mono); display: flex; align-items: center; justify-content: center;
-}
-
-.advice-item { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #f8fafc; font-size: 12.5px; color: #334155; line-height: 1.55; align-items: flex-start; }
-.advice-item:last-child { border-bottom: none; padding-bottom: 0; }
-.adv-icon { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
-
-.hotline-box { background: #fff7ed; border-radius: 9px; padding: 11px 13px; margin-top: 11px; }
-.hotline-label { font-size: 10.5px; font-weight: 700; color: #92400e; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 7px; }
-.hotline-row { font-size: 12.5px; color: #1e293b; padding: 3px 0; display: flex; align-items: center; gap: 7px; }
-
-.pro-card {
-  grid-column: 1/-1;
-  background: var(--navy-card);
-  border-radius: 13px; padding: 18px;
-  border: 1px solid var(--border);
-}
-.pro-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.pro-label { font-size: 11px; font-family: var(--mono); font-weight: 600; letter-spacing: .1em; color: var(--text-2); text-transform: uppercase; }
-.pro-badge { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.25); font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 99px; letter-spacing: .06em; }
-.pro-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.pro-btn {
-  border-radius: 9px; padding: 13px 14px;
-  cursor: pointer; font-family: var(--font); font-size: 12.5px; font-weight: 600;
-  display: flex; align-items: center; gap: 8px;
-  transition: all .2s; border: 1px solid;
-}
-.pro-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
-.pro-btn-red  { background: rgba(220,38,38,.1); border-color: rgba(220,38,38,.3); color: #fca5a5; }
-.pro-btn-red:hover  { background: rgba(220,38,38,.18); }
-.pro-btn-teal { background: rgba(5,150,105,.1); border-color: rgba(5,150,105,.3); color: #6ee7b7; }
-.pro-btn-teal:hover { background: rgba(5,150,105,.18); }
-.pro-btn-sub { font-size: 11px; color: var(--text-3); margin-top: 5px; padding-left: 2px; }
-
-.privacy-row {
-  grid-column: 1/-1;
-  background: #eff6ff; border: 1px solid #bfdbfe;
-  border-radius: 10px; padding: 11px 15px;
-  font-size: 12px; color: #1e40af; line-height: 1.6;
-  display: flex; gap: 9px;
-}
-.privacy-row svg { flex-shrink: 0; width: 15px; height: 15px; margin-top: 2px; }
-
-.module-row { grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.mod-card {
-  background: var(--navy);
-  border: 1px solid var(--border); border-radius: 12px;
-  padding: 14px 16px; cursor: pointer; transition: border-color .2s, transform .2s;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.mod-card:hover { border-color: rgba(255,255,255,.18); transform: translateY(-1px); }
-.mod-left { display: flex; align-items: center; gap: 12px; }
-.mod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.mod-dot-r { background: #f87171; box-shadow: 0 0 7px #f87171; }
-.mod-dot-a { background: #fbbf24; box-shadow: 0 0 7px #fbbf24; }
-.mod-title { font-size: 13px; font-weight: 600; color: var(--text-1); }
-.mod-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.mod-right { display: flex; align-items: center; gap: 8px; }
-.mod-tag { font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-.mod-tag-r { background: var(--red-dim); color: #f87171; border: 1px solid rgba(220,38,38,.2); }
-.mod-tag-a { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
-.mod-arrow { color: var(--text-3); font-size: 16px; }
-
-/* ════════════════════════════════════════
-   PAGE 3 — CYBER TRACING
-════════════════════════════════════════ */
-.p-cyber { background: var(--navy); min-height: calc(100vh - 90px); }
-.cyber-sub-bar {
-  background: #0a1520; padding: 10px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-}
-.csb-left { display: flex; align-items: center; gap: 16px; }
-.csb-brand { display: flex; align-items: center; gap: 10px; }
-.csb-spin {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1.5px solid var(--teal); display: flex; align-items: center; justify-content: center;
-  animation: spin 4s linear infinite;
-}
-.csb-spin svg { width: 14px; height: 14px; color: var(--teal); }
-@keyframes spin { to { transform: rotate(360deg); } }
-.csb-name { font-size: 12px; font-weight: 700; color: var(--text-1); font-family: var(--mono); }
-.csb-sub  { font-size: 10px; color: var(--text-3); }
-.recon-pill {
-  background: var(--green-dim); border: 1px solid rgba(5,150,105,.3);
-  color: #34d399; font-size: 10.5px; font-family: var(--mono); font-weight: 700;
-  letter-spacing: .08em; padding: 4px 12px; border-radius: 99px;
-  animation: breathe 2.5s ease-in-out infinite;
-}
-@keyframes breathe {
-  0%,100% { box-shadow: 0 0 4px rgba(5,150,105,.2); }
-  50%      { box-shadow: 0 0 10px rgba(5,150,105,.5); }
-}
-.csb-right { display: flex; align-items: center; gap: 12px; }
-.threat-pill {
-  background: rgba(220,38,38,.1); border: 1px solid rgba(220,38,38,.3);
-  color: #fca5a5; font-family: var(--mono); font-size: 11.5px; font-weight: 700;
-  padding: 5px 12px; border-radius: 7px;
-}
-.engines-pill {
-  background: var(--navy-light); border: 1px solid var(--border);
-  color: var(--text-2); font-family: var(--mono); font-size: 11px;
-  padding: 5px 12px; border-radius: 7px;
-}
-.engines-pill b { color: var(--amber); }
-
-.cyber-layout { display: grid; grid-template-columns: 420px 1fr; min-height: calc(100vh - 170px); }
-.cyber-panel { padding: 18px 20px; overflow-y: auto; }
-.cyber-panel-r { padding: 18px 20px; border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; }
-
-.dark-card {
-  background: var(--navy-card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
-}
-.dark-card:last-child { margin-bottom: 0; }
-.dc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.dc-label { font-size: 10.5px; font-family: var(--mono); letter-spacing: .1em; color: var(--text-3); text-transform: uppercase; }
-.risk-tag { background: var(--red-dim); border: 1px solid rgba(220,38,38,.25); color: #f87171; font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 5px; }
-
-.url-bar {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--navy); border-radius: 8px; padding: 9px 12px; margin-bottom: 10px;
-}
-.url-bar svg  { width: 13px; height: 13px; color: var(--text-3); flex-shrink: 0; }
-.url-text { font-family: var(--mono); font-size: 12px; color: #f87171; flex: 1; word-break: break-all; }
-.copy-btn { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 2px 5px; border-radius: 4px; transition: color .2s; font-size: 12px; }
-.copy-btn:hover { color: var(--text-1); }
-
-.vt-bar-wrap { margin-top: 6px; }
-.vt-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-3); font-family: var(--mono); margin-bottom: 5px; }
-.vt-labels span:last-child { color: #f87171; font-weight: 700; }
-.vt-track { height: 5px; border-radius: 3px; background: linear-gradient(90deg, #22c55e 0%, #f59e0b 55%, #ef4444 100%); position: relative; }
-.vt-cursor { position: absolute; right: 5%; top: -4px; width: 13px; height: 13px; border-radius: 50%; background: #fff; border: 2px solid #ef4444; box-shadow: 0 0 8px rgba(239,68,68,.5); }
-.vt-sub-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 4px; }
-
-.meta-rows {}
-.mr { display: flex; align-items: baseline; padding: 7.5px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px; }
-.mr:last-child { border-bottom: none; }
-.mr-key { color: var(--text-3); width: 148px; flex-shrink: 0; }
-.mr-val { color: var(--text-1); font-family: var(--mono); font-size: 11.5px; flex: 1; }
-.mr-val.orange { color: #fbbf24; }
-.mr-val.red    { color: #f87171; }
-.mr-val.dim    { color: #fbbf24; }
-.badge-inline { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 4px; font-size: 9.5px; font-weight: 700; }
-.bi-red  { background: var(--red-dim); color: #f87171; border: 1px solid rgba(220,38,38,.2); }
-.bi-warn { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
-
-.geo-accent {
-  background: rgba(217,119,6,.08); border: 1px solid rgba(217,119,6,.2);
-  border-radius: 9px; padding: 11px 13px; margin-top: 9px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.geo-name { font-size: 14px; font-weight: 700; color: var(--amber); }
-.geo-coords { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); margin-top: 3px; }
-.geo-age { background: var(--red-dim); border: 1px solid rgba(220,38,38,.25); border-radius: 8px; padding: 6px 12px; text-align: center; }
-.geo-age-num { font-family: var(--mono); font-size: 20px; font-weight: 800; color: #f87171; display: block; }
-.geo-age-sub { font-size: 9.5px; color: #f87171; font-family: var(--mono); margin-top: 1px; }
-
-.ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
-.port-tile { border-radius: 8px; padding: 8px 10px; }
-.port-safe   { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); }
-.port-warn   { background: var(--amber-dim); border: 1px solid rgba(217,119,6,.25); }
-.port-danger { background: var(--red-dim);   border: 1px solid rgba(220,38,38,.25); }
-.port-num  { font-family: var(--mono); font-size: 14px; font-weight: 700; }
-.port-safe .port-num   { color: #34d399; }
-.port-warn .port-num   { color: #fbbf24; }
-.port-danger .port-num { color: #f87171; }
-.port-name { font-size: 10.5px; margin-top: 2px; }
-.port-safe .port-name   { color: rgba(52,211,153,.65); }
-.port-warn .port-name   { color: rgba(251,191,36,.65); }
-.port-danger .port-name { color: rgba(248,113,113,.65); }
-
-/* map */
-.map-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 0 0 auto; }
-.map-head { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-.map-title-txt { font-size: 11px; font-family: var(--mono); font-weight: 700; color: var(--text-1); letter-spacing: .08em; text-transform: uppercase; }
-.live-tag { display: flex; align-items: center; gap: 5px; font-size: 10px; font-family: var(--mono); color: #34d399; }
-.live-tag .led-green { width: 5px; height: 5px; }
-.map-canvas { height: 180px; background: #07140e; position: relative; overflow: hidden; }
-.map-grid-lines {
-  position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(16,185,129,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-.mdot { position: absolute; width: 7px; height: 7px; border-radius: 50%; transform: translate(-50%,-50%); }
-.mdot-g { background: #34d399; box-shadow: 0 0 10px #34d399; }
-.mdot-r { background: #f87171; box-shadow: 0 0 10px #f87171; }
-.mdot-o { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-.mdot-b { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
-.mlabel { position: absolute; font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.5); white-space: nowrap; transform: translateX(-50%); }
-.mline { position: absolute; height: 1px; background: rgba(248,113,113,.3); transform-origin: left center; }
-
-/* routing */
-.routing-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
-.routing-head { display: flex; justify-content: space-between; font-size: 10.5px; font-family: var(--mono); color: var(--text-3); margin-bottom: 13px; letter-spacing: .08em; text-transform: uppercase; }
-.routing-hops { display: flex; align-items: flex-end; padding-bottom: 2px; }
-.hop { text-align: center; flex: 1; }
-.hop-circle { width: 11px; height: 11px; border-radius: 50%; margin: 0 auto 6px; }
-.hc-g { background: #34d399; box-shadow: 0 0 6px #34d399; }
-.hc-y { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
-.hc-r { background: #f87171; box-shadow: 0 0 6px #f87171; }
-.hop-city { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--text-1); }
-.hop-role { font-size: 9.5px; color: var(--text-3); margin-top: 2px; }
-.hop-arr { flex: 0 0 20px; text-align: center; color: var(--text-3); font-size: 13px; padding-bottom: 16px; }
-
-/* conclusion */
-.conc-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-.conc-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.conc-title { font-size: 13px; font-weight: 700; color: var(--text-1); }
-.conc-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.conf-badge { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); color: #34d399; font-size: 10px; font-family: var(--mono); font-weight: 700; padding: 2px 9px; border-radius: 5px; }
-.conc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 11px; }
-.conc-item { background: var(--navy); border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; font-size: 11.5px; color: var(--text-2); line-height: 1.45; display: flex; gap: 7px; align-items: flex-start; }
-.ci-bullet { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-.ci-g { background: #34d399; }
-.ci-y { background: #fbbf24; }
-.conc-text { background: rgba(0,0,0,.25); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; font-size: 12px; color: var(--text-2); line-height: 1.65; font-family: var(--mono); margin-bottom: 11px; }
-.conc-text strong { color: var(--text-1); }
-.export-btn {
-  width: 100%; background: var(--blue); border: none; color: #fff;
-  border-radius: 9px; padding: 11px; font-family: var(--font);
-  font-size: 13px; font-weight: 700; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  transition: background .2s; box-shadow: 0 2px 10px rgba(37,99,235,.35);
-}
-.export-btn:hover { background: #1d4ed8; }
-.export-btn svg { width: 14px; height: 14px; }
-
-/* ════════════════════════════════════════
-   PAGE 4 — THREAT INTEL
-════════════════════════════════════════ */
-.p-intel { background: var(--navy); min-height: calc(100vh - 90px); }
-.intel-sub-bar {
-  background: #0a1520; padding: 10px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-}
-.isb-left { display: flex; align-items: center; gap: 14px; }
-.isb-brand { display: flex; align-items: center; gap: 10px; }
-.isb-icon { width: 30px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, #d97706, #dc2626); display: flex; align-items: center; justify-content: center; }
-.isb-icon svg { width: 16px; height: 16px; color: white; }
-.isb-name { font-size: 12px; font-weight: 700; color: var(--text-1); font-family: var(--mono); }
-.isb-sub  { font-size: 10px; color: var(--text-3); }
-.db-pill { background: var(--green-dim); border: 1px solid rgba(5,150,105,.25); color: #34d399; font-size: 10.5px; font-family: var(--mono); font-weight: 700; padding: 3px 12px; border-radius: 99px; }
-.isb-right { display: flex; align-items: center; gap: 10px; }
-.stat-chip { background: var(--navy-light); border: 1px solid var(--border); color: var(--text-2); font-family: var(--mono); font-size: 11px; padding: 4px 12px; border-radius: 7px; }
-.stat-chip b { color: var(--amber); }
-.stat-chip .plus { color: #34d399; }
-
-.intel-layout { display: grid; grid-template-columns: 380px 1fr; min-height: calc(100vh - 170px); }
-.intel-panel   { padding: 18px 20px; border-right: 1px solid var(--border); }
-.intel-panel-r { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
-
-.search-intro { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-.search-intro h3 { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 5px; }
-.search-intro p  { font-size: 12px; color: var(--text-3); line-height: 1.55; }
-
-.section-label { font-size: 10.5px; font-family: var(--mono); font-weight: 700; letter-spacing: .12em; color: var(--text-3); text-transform: uppercase; margin-bottom: 12px; margin-top: 16px; display: flex; align-items: center; gap: 8px; }
-
-.field-wrap { margin-bottom: 11px; }
-.field-name { font-size: 12px; color: var(--text-2); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-.field-name svg { width: 13px; height: 13px; color: var(--text-3); }
-.field-box {
-  width: 100%; background: var(--navy);
-  border: 1.5px solid var(--border); border-radius: 8px;
-  padding: 9px 13px; display: flex; align-items: center; gap: 8px;
-  transition: border-color .2s;
-}
-.field-box:focus-within { border-color: rgba(96,165,250,.4); }
-.field-box svg { width: 13px; height: 13px; color: var(--text-3); flex-shrink: 0; }
-.field-box input { background: none; border: none; outline: none; flex: 1; color: var(--text-1); font-family: var(--mono); font-size: 12px; }
-.field-box input::placeholder { color: var(--text-3); }
-
-.scan-btn {
-  width: 100%; background: var(--navy-light); border: 1px solid var(--border);
-  color: var(--text-2); border-radius: 9px; padding: 11px;
-  font-family: var(--font); font-size: 13px; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
-  transition: all .2s; margin-top: 6px;
-}
-.scan-btn svg { width: 14px; height: 14px; }
-.scan-btn:hover { border-color: rgba(96,165,250,.4); color: var(--text-1); }
-
-.measure-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-.mc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.mc-dot { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.mc-dot-red  { background: var(--red-dim); }
-.mc-dot-teal { background: var(--green-dim); }
-.mc-dot svg { width: 16px; height: 16px; }
-.mc-title { font-size: 13px; font-weight: 700; color: var(--text-1); }
-.mc-sub   { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-
-.trap-box { background: var(--navy); border: 1px solid var(--border); border-radius: 10px; padding: 13px 14px; margin-bottom: 12px; }
-.trap-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.trap-title { font-size: 12.5px; font-weight: 700; color: var(--text-1); }
-.honey-badge { background: var(--amber-dim); border: 1px solid rgba(217,119,6,.25); color: var(--amber); font-size: 9.5px; font-family: var(--mono); font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-.trap-desc { font-size: 12px; color: var(--text-3); line-height: 1.55; margin-bottom: 11px; }
-.bait-label { font-size: 10.5px; font-family: var(--mono); letter-spacing: .08em; color: var(--text-3); text-transform: uppercase; margin-bottom: 7px; }
-.bait-row {
-  background: var(--navy-card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 9px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.bait-row-left { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-1); }
-.bait-row-left svg { width: 14px; height: 14px; color: var(--text-3); }
-.most-eff { background: var(--red-dim); border: 1px solid rgba(220,38,38,.2); color: #f87171; font-size: 9.5px; font-family: var(--mono); font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-.gen-trap-btn {
-  width: 100%; margin-top: 11px;
-  background: rgba(220,38,38,.1); border: 1px solid rgba(220,38,38,.3);
-  color: #fca5a5; border-radius: 8px; padding: 11px;
-  font-family: var(--font); font-size: 13px; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px;
-  transition: all .2s;
-}
-.gen-trap-btn svg { width: 15px; height: 15px; }
-.gen-trap-btn:hover { background: rgba(220,38,38,.18); }
-
-.report-card { background: var(--navy-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-.report-card p { font-size: 12px; color: var(--text-3); line-height: 1.55; margin-bottom: 13px; }
-
-.pr-items {}
-.pr-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 7.5px 0; border-bottom: 1px solid rgba(255,255,255,.04); font-size: 12px;
-}
-.pr-row:last-child { border-bottom: none; }
-.pr-row-left { display: flex; align-items: center; gap: 8px; }
-.pr-check { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
-.pr-check-on  { background: var(--green-dim); border: 1.5px solid rgba(5,150,105,.4); }
-.pr-check-off { background: rgba(255,255,255,.03); border: 1.5px solid rgba(255,255,255,.08); }
-.pr-check-on::after { content: ''; display: block; width: 5px; height: 3px; border-left: 1.5px solid #34d399; border-bottom: 1.5px solid #34d399; transform: rotate(-45deg) translate(2px, 0); margin-top: 3px; margin-left: 3px; }
-.pr-text { color: var(--text-2); }
-.pr-text.dim { color: var(--text-3); }
-.pr-status { font-family: var(--mono); font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-.ps-hash   { background: var(--green-dim); color: #34d399; border: 1px solid rgba(5,150,105,.2); }
-.ps-mask   { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
-.ps-enc    { background: rgba(99,102,241,.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,.2); }
-.ps-excl   { background: rgba(255,255,255,.04); color: var(--text-3); border: 1px solid var(--border); }
-
-.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-top: 1px solid rgba(255,255,255,.04); margin-top: 8px; }
-.toggle-info .ti-title { font-size: 12px; color: var(--text-1); font-weight: 500; }
-.toggle-info .ti-sub   { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
-.toggle { position: relative; width: 36px; height: 20px; cursor: pointer; flex-shrink: 0; }
-.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-.tslider { position: absolute; inset: 0; border-radius: 20px; background: rgba(37,99,235,.15); border: 1px solid rgba(37,99,235,.3); transition: all .3s; }
-.tslider::before { content: ''; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #60a5fa; top: 2px; left: 2px; transition: all .3s; box-shadow: 0 0 5px rgba(96,165,250,.5); }
-.toggle input:checked + .tslider::before { transform: translateX(16px); }
-
-.zkp-bar { background: var(--green-dim); border: 1px solid rgba(5,150,105,.2); border-radius: 8px; padding: 9px 12px; font-size: 11.5px; color: #34d399; line-height: 1.55; margin-bottom: 12px; display: flex; gap: 8px; }
-.zkp-bar svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
-.submit-btn {
-  width: 100%; background: rgba(5,150,105,.12); border: 1px solid rgba(5,150,105,.3);
-  color: #34d399; border-radius: 9px; padding: 13px;
-  font-family: var(--font); font-size: 13.5px; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-  transition: all .2s; box-shadow: 0 2px 12px rgba(5,150,105,.1);
-}
-.submit-btn svg { width: 15px; height: 15px; }
-.submit-btn:hover { background: rgba(5,150,105,.2); }
-
-.crowd-bar { background: var(--navy-card); border: 1px solid var(--border); border-radius: 10px; padding: 13px 15px; font-size: 11.5px; color: var(--text-3); line-height: 1.6; display: flex; gap: 9px; }
-.crowd-bar svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: var(--text-3); }
-
-/* ── LOADING ─────────────────────────────── */
-.loading-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(10,20,34,.92); z-index: 200;
-  flex-direction: column; align-items: center; justify-content: center; gap: 18px;
-}
-.loading-overlay.show { display: flex; }
-.loader-ring { width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--navy-light); border-top-color: var(--blue); animation: spin .8s linear infinite; }
-.load-text { font-family: var(--mono); color: var(--text-1); font-size: 13.5px; }
-.load-sub  { font-family: var(--mono); color: var(--text-3); font-size: 11.5px; }
-
-/* toast */
-.toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 12.5px; font-family: var(--mono); opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 300; }
-.toast.show { opacity: 1; }
-
-/* cyber tabs */
-.ctabs { display: flex; gap: 0; margin-bottom: 16px; }
-.ctab { flex: 1; padding: 8px 12px; background: var(--navy-light); border: 1px solid var(--border); color: var(--text-3); cursor: pointer; font-family: var(--mono); font-size: 11px; font-weight: 600; transition: all .2s; display: flex; align-items: center; gap: 6px; }
-.ctab svg { width: 12px; height: 12px; }
-.ctab:first-child { border-radius: 8px 0 0 8px; }
-.ctab:last-child  { border-radius: 0 8px 8px 0; border-left: none; }
-.ctab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-
-/* scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 2px; }
-
-@media (max-width: 900px) {
-  .type-grid { grid-template-columns: repeat(2,1fr); }
-  .result-grid, .module-row, .pro-btns { grid-template-columns: 1fr; }
-  .r-card:nth-child(2), .pro-card, .privacy-row, .module-row { grid-column: 1; }
-  .cyber-layout, .intel-layout { grid-template-columns: 1fr; }
-  .conc-grid { grid-template-columns: 1fr; }
-}
-</style>
-</head>
-<body>
-
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loader-ring"></div>
-  <div class="load-text">AI Engine กำลังวิเคราะห์</div>
-  <div class="load-sub">3-Agent Pipeline · Thai NLP · &lt; 4s</div>
-</div>
-<div class="toast" id="toast">คัดลอกแล้ว</div>
-
-<!-- ══════════════════════════════════════════
-     PAGE 1 — INPUT
-══════════════════════════════════════════ -->
-<div id="page-input" class="page active">
-  <div class="topbar">
-    <div class="tb-brand">
-      <div class="tb-logomark">
-        <svg viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z"/></svg>
-      </div>
-      <div>
-        <div class="tb-name">SCAM DETECTOR</div>
-        <div class="tb-sub">PDPA Compliant · AI Engine</div>
-      </div>
-    </div>
-    <div class="tb-right">
-      <div class="tb-pill"><div class="led led-green"></div> AI Engine Online</div>
-    </div>
-  </div>
-  <div class="statusbar">
-    <div class="s-tag"><div class="s-dot s-dot-g"></div> End-to-End Encrypted</div>
-    <div class="s-tag"><div class="s-dot s-dot-r"></div> 3-Agent AI Pipeline</div>
-    <div class="s-tag"><div class="s-dot s-dot-b"></div> Thai-Language NLP</div>
-    <div class="s-tag"><div class="s-dot s-dot-y"></div> &lt; 4s Analysis Time</div>
-    <div class="s-tag"><div class="s-dot s-dot-g"></div> PDPA 2562 Compliant</div>
-  </div>
-
-  <div class="p-input">
-    <div class="input-shell">
-      <div class="input-header">
-        <div class="input-header-label">
-          <div class="hdr-indicators"><div class="hdr-ind hdr-ind-a"></div><div class="hdr-ind hdr-ind-b"></div></div>
-          INPUT YOUR INFORMATION
-        </div>
-        <div class="input-header-hint">Select type · Paste content · Analyze</div>
-      </div>
-      <div class="input-body">
-        <div class="type-grid">
-          <div class="type-tile sel" onclick="selType(this,'text')">
-            <div class="tile-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-            </div>
-            <div class="tile-name">Text / SMS ข้อความ</div>
-            <div class="tile-sub">Paste message</div>
-          </div>
-          <div class="type-tile" onclick="selType(this,'url')">
-            <div class="tile-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-            </div>
-            <div class="tile-name">URL / Link เว็บไซต์</div>
-            <div class="tile-sub">Check website</div>
-          </div>
-          <div class="type-tile" onclick="selType(this,'img')">
-            <div class="tile-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-            </div>
-            <div class="tile-name">Screenshot รูปภาพ</div>
-            <div class="tile-sub">Upload image</div>
-          </div>
-          <div class="type-tile" onclick="selType(this,'voice')">
-            <div class="tile-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
-            </div>
-            <div class="tile-name">Voice / Audio คลิปเสียง</div>
-            <div class="tile-sub">Record audio</div>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <label id="contentLabel">Paste content วางข้อความ</label>
-          <div class="char-ct" id="charCount">0 chars</div>
-        </div>
-        <textarea class="main-ta" id="mainInput" rows="6"
-          placeholder="Paste the full suspicious message here....&#10;วางข้อความน่าสงสัย เช่น : 'แจ้งเตือน!! บัญชีของคุณถูกระงับ...'"
-          oninput="updateChar()"></textarea>
-
-        <div class="ta-footer">
-          <div class="sup-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-            Supports Thai, English, and mixed-language
-          </div>
-          <div class="sample-row">
-            <button class="sample-btn" onclick="loadSample(1)">Sample 1</button>
-            <button class="sample-btn" onclick="loadSample(2)">Sample 2</button>
-            <button class="sample-btn" onclick="loadSample(3)">Sample 3</button>
-          </div>
-        </div>
-
-        <button class="analyze-btn" onclick="startAnalysis()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          Analyze for Risks
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     PAGE 2 — RESULT
-══════════════════════════════════════════ -->
-<div id="page-result" class="page">
-  <div class="topbar">
-    <div class="tb-brand">
-      <button class="back-btn" onclick="showPage('input')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        วิเคราะห์ใหม่
-      </button>
-      <div class="tb-logomark"><svg viewBox="0 0 24 24"><path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z"/></svg></div>
-      <div><div class="tb-name">SCAM DETECTOR</div><div class="tb-sub">PDPA Compliant · Local Processing · Zero Data Retention</div></div>
-    </div>
-    <div class="tb-right">
-      <div class="tb-pill"><div class="led led-blue"></div> Connect Smartwatch</div>
-      <div class="tb-pill"><div class="led led-green"></div> AI Engine Online</div>
-    </div>
-  </div>
-  <div class="statusbar">
-    <div class="s-tag"><div class="s-dot s-dot-g"></div> End-to-End Encrypted</div>
-    <div class="s-tag"><div class="s-dot s-dot-r"></div> 3-Agent AI Pipeline</div>
-    <div class="s-tag"><div class="s-dot s-dot-b"></div> Thai-Language NLP</div>
-    <div class="s-tag"><div class="s-dot s-dot-y"></div> &lt; 4s Analysis Time</div>
-    <div class="s-tag"><div class="s-dot s-dot-g"></div> PDPA 2562 Compliant</div>
-  </div>
-
-  <div class="p-result">
-    <div class="hero-band">
-      <div class="score-block">
-        <div class="score-label">Risk Score</div>
-        <div class="score-box">
-          <div class="score-num">90</div>
-          <div class="score-denom">/ 100</div>
-        </div>
-        <div class="score-pips">
-          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
-          <div class="pip on"></div><div class="pip on"></div><div class="pip on"></div>
-          <div class="pip hi"></div><div class="pip hi"></div><div class="pip"></div>
-        </div>
-      </div>
-      <div class="hero-content">
-        <div class="analysis-tag"><div class="tag-dot"></div> ANALYSIS COMPLETE</div>
-        <div class="hero-title">อันตราย! — พบรูปแบบการหลอกลวงชัดเจน</div>
-        <div class="hero-sub">DANGER — High-Risk Scam Detected</div>
-        <div class="agent-panel">
-          <div class="agent-panel-title">AI Agent Breakdown</div>
-          <div class="agent-row">
-            <div class="agent-meta"><span>LLM Contextual Agent (60%)</span><span class="agent-pct">88%</span></div>
-            <div class="prog-track"><div class="prog-fill" style="width:88%"></div></div>
-          </div>
-          <div class="agent-row">
-            <div class="agent-meta"><span>Rule-Based Engine (30%)</span><span class="agent-pct">82%</span></div>
-            <div class="prog-track"><div class="prog-fill" style="width:82%"></div></div>
-          </div>
-          <div class="agent-row">
-            <div class="agent-meta"><span>AI Classifier Thai (10%)</span><span class="agent-pct">86%</span></div>
-            <div class="prog-track"><div class="prog-fill" style="width:86%"></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="result-grid">
-      <div class="r-card">
-        <div class="r-card-title">Explainable AI (XAI) Reasons — เหตุผลที่ AI ตัดสินใจแบบนี้</div>
-        <div class="xai-item"><div class="xai-n">1</div><div>พบภาษาสร้างความเร่งด่วนสูง เช่น "ดำเนินการทันที!" และ "บัญชีจะถูกปิดใน 24 ชั่วโมง"</div></div>
-        <div class="xai-item"><div class="xai-n">2</div><div>โดเมนถูกจดทะเบียนเพียง 2 วันที่ผ่านมา — สัญญาณโดเมนใหม่ความเสี่ยงสูงมาก</div></div>
-        <div class="xai-item"><div class="xai-n">3</div><div>หมายเลขโทรศัพท์ตรงกับบัญชีดำในระบบฐานข้อมูลแห่งชาติ</div></div>
-        <div class="xai-item"><div class="xai-n">4</div><div>WangchanBERTa ความมั่นใจว่าเป็นสแกม: 94.7% — เนื้อหามีจำเพาะชัดเจน</div></div>
-        <div class="xai-item"><div class="xai-n">5</div><div>ตรวจพบการแอบอ้างเป็นหน่วยงานรัฐ (ธ.ก.ส. / กรมสรรพากร)</div></div>
-      </div>
-
-      <div class="r-card">
-        <div class="r-card-title">Actionable Advice — สิ่งที่ควรทำทันที</div>
-        <div class="advice-item">
-          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-          <div>บล็อกหมายเลขทันที — ห้ามตอบกลับโดยเด็ดขาด</div>
-        </div>
-        <div class="advice-item">
-          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-          <div>ห้ามคลิกลิงก์ใดๆ — มีความเสี่ยงสูงจะติดตั้งมัลแวร์</div>
-        </div>
-        <div class="advice-item">
-          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.7A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg></div>
-          <div>แจ้งความ ETDA โทร <strong>1212</strong> ตลอด 24 ชั่วโมง (โทรฟรี)</div>
-        </div>
-        <div class="advice-item">
-          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-          <div>แจ้งเตือนสมาชิกในครอบครัว — รูปแบบนี้กำลังแพร่กระจาย</div>
-        </div>
-        <div class="advice-item">
-          <div class="adv-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-          <div>ร้องเรียนที่ thaipoliceonline.com</div>
-        </div>
-        <div class="hotline-box">
-          <div class="hotline-label">ช่องทางแจ้งเหตุ</div>
-          <div class="hotline-row">ETDA Cybercrime: <strong>1212</strong></div>
-          <div class="hotline-row">thaipoliceonline.com</div>
-        </div>
-      </div>
-
-      <div class="pro-card">
-        <div class="pro-top">
-          <div class="pro-label">Advanced Tracing &amp; Deception Tools</div>
-          <div class="pro-badge">PRO FEATURES</div>
-        </div>
-        <div class="pro-btns">
-          <div>
-            <button class="pro-btn pro-btn-red" onclick="showPage('intel')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-              Generate Honey-Token Link Trap
-            </button>
-            <div class="pro-btn-sub">สร้าง decoy URL เพื่อติดตาม digital footprint ของอาชญากร</div>
-          </div>
-          <div>
-            <button class="pro-btn pro-btn-teal">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-              One-Click Safe Share (LINE)
-            </button>
-            <div class="pro-btn-sub">สร้าง Infographic ภาษาไทย-อังกฤษ เพื่อแจ้งเตือนครอบครัว</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="privacy-row">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        <span><strong>Automated Data Ephemerality:</strong> ข้อความและเนื้อหาทั้งหมดจะถูกลบออกจากระบบภายใน 5 นาที ไม่มีการเก็บข้อมูลส่วนบุคคล ปฏิบัติตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) พ.ศ. 2562</span>
-      </div>
-
-      <div class="module-row">
-        <div class="mod-card" onclick="showPage('cyber')">
-          <div class="mod-left">
-            <div class="mod-dot mod-dot-r"></div>
-            <div>
-              <div class="mod-title">Cyber Threat Tracing</div>
-              <div class="mod-sub">IP Geolocation · EXIF · Threat Map</div>
-            </div>
-          </div>
-          <div class="mod-right">
-            <div class="mod-tag mod-tag-r">FR2.6</div>
-            <div class="mod-arrow">›</div>
-          </div>
-        </div>
-        <div class="mod-card" onclick="showPage('intel')">
-          <div class="mod-left">
-            <div class="mod-dot mod-dot-a"></div>
-            <div>
-              <div class="mod-title">Threat Intel Center</div>
-              <div class="mod-sub">Honey-Token · ZKP Report · Crowd Intel</div>
-            </div>
-          </div>
-          <div class="mod-right">
-            <div class="mod-tag mod-tag-a">FR2.7</div>
-            <div class="mod-arrow">›</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     PAGE 3 — CYBER TRACING
-══════════════════════════════════════════ -->
-<div id="page-cyber" class="page">
-  <div class="topbar">
-    <div class="tb-brand">
-      <button class="back-btn" onclick="showPage('result')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        กลับ
-      </button>
-    </div>
-  </div>
-  <div class="cyber-sub-bar">
-    <div class="csb-left">
-      <div class="csb-brand">
-        <div class="csb-spin">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/></svg>
-        </div>
-        <div>
-          <div class="csb-name">Cyber Threat Tracing &amp; OSINT Intelligence</div>
-          <div class="csb-sub">FR2.6 — IP Geolocation &amp; Metadata Extraction</div>
-        </div>
-      </div>
-      <div class="recon-pill">ACTIVE RECONNAISSANCE MODE</div>
-    </div>
-    <div class="csb-right">
-      <div class="threat-pill">Threat Score: 94 / 100</div>
-      <div class="engines-pill">Engines: <b>12</b> / 87 flagged</div>
-    </div>
-  </div>
-
-  <div class="cyber-layout">
-    <div class="cyber-panel">
-      <div class="ctabs">
-        <div class="ctab active">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-          FR2.6.1 — URL / IP OSINT
-        </div>
-        <div class="ctab">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          FR2.6.2 — Image EXIF
-        </div>
-      </div>
-
-      <div class="dark-card">
-        <div class="dc-head">
-          <div class="dc-label">Target Analyzed</div>
-          <div class="risk-tag">HIGH RISK</div>
-        </div>
-        <div class="url-bar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-          <span class="url-text">http://scam-bank-verification.com/th/login</span>
-          <button class="copy-btn" onclick="copyText('http://scam-bank-verification.com/th/login')">⧉</button>
-        </div>
-        <div class="vt-bar-wrap">
-          <div class="vt-labels"><span>VirusTotal — Threat Score</span><span>94 / 100</span></div>
-          <div class="vt-track"><div class="vt-cursor"></div></div>
-          <div class="vt-sub-labels"><span>0 — Safe</span><span>40 — Warning</span><span>70 — Danger</span></div>
-        </div>
-      </div>
-
-      <div class="dark-card">
-        <div class="dc-label" style="margin-bottom:12px;">Server Metadata — IP Intelligence</div>
-        <div class="meta-rows">
-          <div class="mr"><span class="mr-key">Server IP</span><span class="mr-val orange">103.245.48.221 <button class="copy-btn" onclick="copyText('103.245.48.221')">⧉</button></span></div>
-          <div class="mr"><span class="mr-key">ISP / Host</span><span class="mr-val dim">Rogue Asia Hosting Co., Ltd.</span></div>
-          <div class="mr"><span class="mr-key">CDN / Proxy</span><span class="mr-val dim">Cloudflare Proxy (Origin Masked)</span></div>
-          <div class="mr"><span class="mr-key">ASN</span><span class="mr-val">AS13339B — ICIDC-CONSORTIUM-AS-AP</span></div>
-          <div class="mr"><span class="mr-key">SSL Certificate</span><span class="mr-val red">Let's Encrypt — ออกเมื่อ 1 วันที่แล้ว</span></div>
-          <div class="mr"><span class="mr-key">Registrar</span><span class="mr-val">Namecheap (Privacy Protected)</span></div>
-          <div class="mr"><span class="mr-key">Reverse DNS</span><span class="mr-val red">ไม่มีการตั้งค่า (น่าสงสัย)<span class="badge-inline bi-red">HIGH</span></span></div>
-        </div>
-        <div class="geo-accent">
-          <div>
-            <div class="geo-name">Cambodia</div>
-            <div class="geo-coords">Phnom Penh — 11.5564° N, 104.9282° E</div>
-          </div>
-          <div class="geo-age">
-            <span class="geo-age-num">2</span>
-            <div class="geo-age-sub">วัน · Critical Risk</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="dark-card">
-        <div class="dc-label" style="margin-bottom:10px;">Open Ports Detected</div>
-        <div class="ports-grid">
-          <div class="port-tile port-safe"><div class="port-num">:80</div><div class="port-name">HTTP</div></div>
-          <div class="port-tile port-safe"><div class="port-num">:443</div><div class="port-name">HTTPS</div></div>
-          <div class="port-tile port-warn"><div class="port-num">:22</div><div class="port-name">SSH Open</div></div>
-          <div class="port-tile port-danger"><div class="port-num">:3306</div><div class="port-name">MySQL Exposed</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cyber-panel-r">
-      <div class="map-card">
-        <div class="map-head">
-          <div class="map-title-txt">Live Cyber Threat Map</div>
-          <div class="live-tag"><div class="led-green led"></div> Real-time · Auto-Refresh 30s</div>
-        </div>
-        <div class="map-canvas">
-          <div class="map-grid-lines"></div>
-          <div class="mdot mdot-g" style="left:44%;top:52%"></div>
-          <div class="mdot mdot-b" style="left:53%;top:45%"></div>
-          <div class="mdot mdot-o" style="left:61%;top:37%"></div>
-          <div class="mdot mdot-r" style="left:63%;top:54%"></div>
-          <div class="mline" style="left:44%;top:52%;width:65px;transform:rotate(18deg)"></div>
-          <div class="mline" style="left:53%;top:45%;width:60px;transform:rotate(12deg)"></div>
-          <div class="mline" style="left:61%;top:37%;width:40px;transform:rotate(38deg)"></div>
-          <div class="mlabel" style="left:44%;top:58%">Bangkok, TH</div>
-          <div class="mlabel" style="left:53%;top:40%">Singapore</div>
-          <div class="mlabel" style="left:61%;top:32%">Hong Kong</div>
-          <div class="mlabel" style="left:63%;top:59%;color:#f87171">Threat Server</div>
-        </div>
-        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:10px;color:var(--text-3);font-family:var(--mono)">15.5564° N — 104.0082° E · SE Asia Focus</span>
-          <div class="live-tag"><div class="led-green led"></div> Live</div>
-        </div>
-      </div>
-
-      <div class="routing-card">
-        <div class="routing-head"><span>Attack Routing Path</span><span style="color:var(--teal)">4 hops traced</span></div>
-        <div class="routing-hops">
-          <div class="hop"><div class="hop-circle hc-g"></div><div class="hop-city">Bangkok, TH</div><div class="hop-role">Your IP</div></div>
-          <div class="hop-arr">›</div>
-          <div class="hop"><div class="hop-circle hc-y"></div><div class="hop-city">Singapore</div><div class="hop-role">Relay 1</div></div>
-          <div class="hop-arr">›</div>
-          <div class="hop"><div class="hop-circle hc-y"></div><div class="hop-city">Hong Kong</div><div class="hop-role">Relay 2</div></div>
-          <div class="hop-arr">›</div>
-          <div class="hop"><div class="hop-circle hc-r"></div><div class="hop-city">Phnom Penh, KH</div><div class="hop-role">Threat Server</div></div>
-        </div>
-      </div>
-
-      <div class="conc-card">
-        <div class="conc-head">
-          <div><div class="conc-title">Cyber Forensic Conclusion</div><div class="conc-sub">สรุปผลการวิเคราะห์ทางนิติวิทยาศาสตร์ดิจิทัล</div></div>
-          <div class="conf-badge">HIGH CONFIDENCE</div>
-        </div>
-        <div class="conc-grid">
-          <div class="conc-item"><div class="ci-bullet ci-g"></div>ปัญหาจากนอกประเทศไทย — ความเสี่ยงสูง</div>
-          <div class="conc-item"><div class="ci-bullet ci-y"></div>โดเมนอายุ 2 วัน ใช้หลอกให้ผู้ใช้สมัคร</div>
-          <div class="conc-item"><div class="ci-bullet ci-g"></div>GPS ภาพสอดคล้องกับ Server Infrastructure</div>
-          <div class="conc-item"><div class="ci-bullet ci-y"></div>Metadata ภาพ — เอกสารปลอมแปลง (94.7%)</div>
-        </div>
-        <div class="conc-text"><strong>Conclusion:</strong> High probability of an offshore operation. Server hosted in a known high-risk jurisdiction with anonymized domain proxy. Image metadata consistent with server geolocation in Phnom Penh, Cambodia.</div>
-        <button class="export-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export Cyber Forensic Evidence (.PDF)
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     PAGE 4 — THREAT INTEL CENTER
-══════════════════════════════════════════ -->
-<div id="page-intel" class="page">
-  <div class="topbar">
-    <div class="tb-brand">
-      <button class="back-btn" onclick="showPage('result')">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        กลับ
-      </button>
-    </div>
-  </div>
-  <div class="intel-sub-bar">
-    <div class="isb-left">
-      <div class="isb-brand">
-        <div class="isb-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        </div>
-        <div>
-          <div class="isb-name">Scam Threat Intelligence Center</div>
-          <div class="isb-sub">FR2.7 — Crowdsourced Cyber Threat Deception &amp; Reporting</div>
-        </div>
-      </div>
-      <div class="db-pill">DATABASE ONLINE</div>
-    </div>
-    <div class="isb-right">
-      <div class="stat-chip">Total Reports: <b>48,291</b></div>
-      <div class="stat-chip">Last 24h: <b class="plus">+342</b></div>
-      <div class="stat-chip">Honey Traps: <b>1,847 active</b></div>
-    </div>
-  </div>
-
-  <div class="intel-layout">
-    <div class="intel-panel">
-      <div class="search-intro">
-        <h3>Counter-Intelligence Search</h3>
-        <p>ค้นหาหมายเลขโทรศัพท์ LINE ID หรือเลขบัญชีธนาคารที่ต้องสงสัย แล้วเปิดใช้งานมาตรการตอบโต้ได้</p>
-      </div>
-
-      <div class="section-label">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        Threat Target Input
-      </div>
-
-      <div class="field-wrap">
-        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0112 18.54 19.5 19.5 0 015.19 12 19.79 19.79 0 012.1 3.22 2 2 0 014 1h3a2 2 0 012 1.72c.128.96.362 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7A2 2 0 0122 14.92z"/></svg> หมายเลขโทรศัพท์</div>
-        <div class="field-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0112 18.54 19.5 19.5 0 015.19 12 19.79 19.79 0 012.1 3.22 2 2 0 014 1h3a2 2 0 012 1.72c.128.96.362 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7A2 2 0 0122 14.92z"/></svg>
-          <input type="text" placeholder="08x-xxx-xxxx">
-        </div>
-      </div>
-      <div class="field-wrap">
-        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Line ID / Social Handle</div>
-        <div class="field-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          <input type="text" placeholder="@scam_invest หรือ username">
-        </div>
-      </div>
-      <div class="field-wrap">
-        <div class="field-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> หมายเลขบัญชีธนาคาร</div>
-        <div class="field-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          <input type="text" placeholder="เลขบัญชี + ชื่อธนาคาร">
-        </div>
-      </div>
-
-      <button class="scan-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        Check Database &amp; Scan History
-      </button>
-    </div>
-
-    <div class="intel-panel-r">
-      <div class="measure-card">
-        <div class="mc-head">
-          <div class="mc-dot mc-dot-red">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <div><div class="mc-title">Advanced Countermeasures</div><div class="mc-sub">ค้นหาบ้าหมากก่อนเพื่อไม่เปิดใช้งานระบบตอบโต้ได้</div></div>
-        </div>
-
-        <div class="trap-box">
-          <div class="trap-head">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-            <div class="trap-title">Deploy Deception Trap</div>
-            <div class="honey-badge">Canary Honey-Token</div>
-          </div>
-          <div class="trap-desc">Turn the tables. Generate a decoy asset link to capture the scammer's real digital footprint legally when they click it out of greed.</div>
-          <div class="bait-label">Bait Type</div>
-          <div class="bait-row">
-            <div class="bait-row-left">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Fake Bank Transfer Slip (.pdf)
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="most-eff">Most Effective</div>
-              <span style="color:var(--text-3)">▾</span>
-            </div>
-          </div>
-          <button class="gen-trap-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Generate Honey-Trap Link
-          </button>
-        </div>
-      </div>
-
-      <div class="report-card">
-        <div class="mc-head">
-          <div class="mc-dot mc-dot-teal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          </div>
-          <div><div class="mc-title">Privacy-First Anonymous Report</div><div class="mc-sub">รายงานแบบนิรนาม PDPA-Safe</div></div>
-        </div>
-        <p>Contribute to the central threat database. Your submission will be cryptographically hashed. Even we (the developers) cannot track who reported this or view your raw private chats.</p>
-
-        <div class="section-label" style="margin-top:0">สิ่งที่จะถูกส่งไปยังฐานข้อมูล</div>
-        <div class="pr-items">
-          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">หมายเลขโทรศัพท์ / Line ID (Hashed)</span></div><div class="pr-status ps-hash">HASHED</div></div>
-          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">หมายเลขบัญชีธนาคาร (Masked)</span></div><div class="pr-status ps-mask">MASKED</div></div>
-          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-on"></div><span class="pr-text">ประเภทการหลอกลวง (Encoded)</span></div><div class="pr-status ps-enc">ENCODED</div></div>
-          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-off"></div><span class="pr-text dim">เนื้อหาการสนทนาส่วนตัว</span></div><div class="pr-status ps-excl">EXCLUDED</div></div>
-          <div class="pr-row"><div class="pr-row-left"><div class="pr-check pr-check-off"></div><span class="pr-text dim">ข้อมูลตัวตนของผู้รายงาน</span></div><div class="pr-status ps-excl">EXCLUDED</div></div>
-        </div>
-
-        <div class="toggle-row">
-          <div class="toggle-info">
-            <div class="ti-title">Enable Homomorphic Cryptographic Hashing</div>
-            <div class="ti-sub">ยกระดับความปลอดภัยด้วย SHA-256 + ZKP protocol</div>
-          </div>
-          <label class="toggle"><input type="checkbox" checked><span class="tslider"></span></label>
-        </div>
-
-        <div class="zkp-bar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Zero-Knowledge Proof (ZKP) ช่วยให้พิสูจน์ข้อมูลของคุณถูกต้องโดยไม่เปิดเผยข้อมูลส่วนบุคคล — ตามหลักการ PDPA
-        </div>
-
-        <button class="submit-btn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-          Submit Anonymous ZKP Report
-        </button>
-      </div>
-
-      <div class="crowd-bar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        ระบบ Crowdsourced Intelligence: ข้อมูลทุกรายงานถูกรวบรวมเข้ากับ National Scam Registry แลกเปลี่ยนกับ ETDA · DSI · สำนักงานตำรวจแห่งชาติ ผ่านกรอบกฎหมาย MoU — ข้อมูลส่วนตัวของผู้รายงานได้รับการปกป้อง PDPA พ.ศ. 2562
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const samples = [
+<file path="frontend/src/components/InputPage.jsx">
+// frontend/src/components/InputPage.jsx
+import { useState, useRef } from 'react';
+import { Topbar, Statusbar } from './Topbar';
+
+const SAMPLES = [
   "แจ้งเตือน!! บัญชีของคุณถูกระงับ กรุณาคลิกลิงก์ยืนยันตัวตนภายใน 24 ชั่วโมง มิฉะนั้นบัญชีจะถูกปิดถาวร https://scam-bank-verify.com/th/login",
   "คุณได้รับเงินรางวัล 50,000 บาท! ยืนยันการรับเงินโดยโอน 500 บาทเป็นค่าธรรมเนียมก่อน แล้วเงินรางวัลจะถูกโอนภายใน 1 ชั่วโมง LINE: @lottery_official",
-  "กรมสรรพากร: ท่านมีเงินคืนภาษี 12,450 บาท กดลิงก์รับเงินคืนด่วน! ต้องยืนยันข้อมูลบัตรประชาชนและบัญชีธนาคาร https://rd-refund-th.com"
+  "กรมสรรพากร: ท่านมีเงินคืนภาษี 12,450 บาท กดลิงก์รับเงินคืนด่วน! ต้องยืนยันข้อมูลบัตรประชาชนและบัญชีธนาคาร https://rd-refund-th.com",
 ];
 
-function selType(el, type) {
-  document.querySelectorAll('#page-input .type-tile').forEach(t => t.classList.remove('sel'));
-  el.classList.add('sel');
-  const map = { text:'Paste content วางข้อความ', url:'Enter URL / Link เว็บไซต์', img:'Upload Screenshot รูปภาพ', voice:'Record Voice / Audio เสียง' };
-  document.getElementById('contentLabel').textContent = map[type] || 'Paste content วางข้อความ';
+const INPUT_TYPES = [
+  {
+    id: 'text', label: 'Text / SMS ข้อความ', sub: 'Paste message',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-full h-full">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'url', label: 'URL / Link เว็บไซต์', sub: 'Check website',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-full h-full">
+        <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+        <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+      </svg>
+    ),
+  },
+  {
+    id: 'image', label: 'Screenshot รูปภาพ', sub: 'Upload image',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-full h-full">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <circle cx="8.5" cy="8.5" r="1.5" />
+        <path d="M21 15l-5-5L5 21" />
+      </svg>
+    ),
+  },
+  {
+    id: 'audio', label: 'Voice / Audio คลิปเสียง', sub: 'Record audio',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-full h-full">
+        <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+        <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8" />
+      </svg>
+    ),
+  },
+];
+
+const LABEL_MAP = {
+  text: 'Paste content วางข้อความ',
+  url: 'Enter URL / Link เว็บไซต์',
+  image: 'Upload Screenshot รูปภาพ',
+  audio: 'Record Voice / Audio เสียง',
+};
+
+export default function InputPage({ onAnalyze, error }) {
+  const [selType, setSelType] = useState('text');
+  const [content, setContent] = useState('');
+  const [file, setFile] = useState(null);
+  const [shake, setShake] = useState(false);
+  const fileRef = useRef(null);
+
+  const handleSubmit = () => {
+    if (!content.trim() && !file) {
+      setShake(true);
+      setTimeout(() => setShake(false), 1500);
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('inputType', selType);
+
+    if (selType === 'image' || selType === 'audio') {
+      if (file) fd.append('file', file);
+    } else if (selType === 'url') {
+      fd.append('url', content.trim());
+    } else {
+      fd.append('text', content.trim());
+    }
+
+    onAnalyze(fd, content.trim());
+  };
+
+  const isFileType = selType === 'image' || selType === 'audio';
+
+  return (
+    <div className="fade-in min-h-screen" style={{ background: '#eef2f7' }}>
+      <Topbar />
+      <Statusbar />
+
+      <div className="p-11 px-6 min-h-[calc(100vh-90px)]" style={{ background: '#eef2f7' }}>
+        <div
+          className="max-w-[820px] mx-auto rounded-2xl overflow-hidden"
+          style={{ background: '#ffffff', boxShadow: '0 2px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)' }}
+        >
+          {/* Card header */}
+          <div
+            className="px-[22px] py-[13px] flex items-center justify-between"
+            style={{ background: '#0d1b2e' }}
+          >
+            <div className="flex items-center gap-2.5 font-mono-ibm text-[11px] font-semibold tracking-[0.1em] text-[#94a3b8]">
+              <div className="flex gap-[5px]">
+                <div className="w-[9px] h-[9px] rounded-full" style={{ background: '#2563eb' }} />
+                <div className="w-[9px] h-[9px] rounded-full opacity-50" style={{ background: '#0891b2' }} />
+              </div>
+              INPUT YOUR INFORMATION
+            </div>
+            <div className="text-[11px] text-[#64748b]">Select type · Paste content · Analyze</div>
+          </div>
+
+          {/* Card body */}
+          <div className="p-6 pb-[22px]">
+            {/* Type selector */}
+            <div className="grid grid-cols-4 gap-2.5 mb-[22px]">
+              {INPUT_TYPES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setSelType(t.id)}
+                  className="border-[1.5px] rounded-xl p-4 px-3 cursor-pointer text-left transition-all"
+                  style={{
+                    borderColor: selType === t.id ? '#2563eb' : '#e2e8f0',
+                    background: selType === t.id ? '#eff6ff' : '#fafbfd',
+                    boxShadow: selType === t.id ? '0 0 0 3px rgba(37,99,235,.08)' : 'none',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={(e) => { if (selType !== t.id) { e.currentTarget.style.borderColor = '#93c5fd'; e.currentTarget.style.background = '#f0f7ff'; } }}
+                  onMouseLeave={(e) => { if (selType !== t.id) { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.background = '#fafbfd'; } }}
+                >
+                  <div
+                    className="w-7 h-7 mb-[9px]"
+                    style={{ color: selType === t.id ? '#2563eb' : '#94a3b8' }}
+                  >
+                    {t.icon}
+                  </div>
+                  <div
+                    className="text-[12.5px] font-semibold"
+                    style={{ color: selType === t.id ? '#2563eb' : '#1e293b' }}
+                  >
+                    {t.label}
+                  </div>
+                  <div className="text-[11px] text-[#94a3b8] mt-0.5">{t.sub}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Label row */}
+            <div className="flex justify-between items-center mb-[9px]">
+              <label className="text-[12.5px] font-semibold text-[#334155]">
+                {LABEL_MAP[selType]}
+              </label>
+              {!isFileType && (
+                <span className="font-mono-ibm text-[11px] text-[#94a3b8]">{content.length} chars</span>
+              )}
+            </div>
+
+            {/* Input area */}
+            {isFileType ? (
+              <div
+                className="w-full min-h-[130px] border-[1.5px] rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer transition-all"
+                style={{ borderColor: '#e2e8f0', background: '#fafbfd', borderStyle: 'dashed' }}
+                onClick={() => fileRef.current?.click()}
+              >
+                <input
+                  ref={fileRef}
+                  type="file"
+                  className="hidden"
+                  accept={selType === 'image' ? 'image/*' : 'audio/*'}
+                  onChange={(e) => setFile(e.target.files[0] || null)}
+                />
+                <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.5" className="w-8 h-8">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                <div className="text-sm text-[#64748b]">
+                  {file ? <span className="text-[#2563eb] font-semibold">{file.name}</span> : `คลิกเพื่อเลือกไฟล์ ${selType === 'image' ? 'รูปภาพ' : 'เสียง'}`}
+                </div>
+                <div className="text-[11px] text-[#94a3b8]">
+                  {selType === 'image' ? 'JPEG, PNG, WebP — max 5MB' : 'MP3, WAV, MP4, WebM — max 5MB'}
+                </div>
+              </div>
+            ) : (
+              <textarea
+                className="w-full min-h-[130px] border-[1.5px] rounded-xl p-[14px] px-4 text-[13.5px] text-[#334155] resize-y outline-none transition-all leading-[1.65]"
+                style={{
+                  borderColor: shake ? '#ef4444' : '#e2e8f0',
+                  background: '#fafbfd',
+                  fontFamily: 'inherit',
+                }}
+                placeholder={selType === 'url'
+                  ? 'https://suspicious-website.com/th/login'
+                  : "Paste the full suspicious message here....\nวางข้อความน่าสงสัย เช่น : 'แจ้งเตือน!! บัญชีของคุณถูกระงับ...'"
+                }
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={6}
+                onFocus={(e) => { e.target.style.borderColor = '#93c5fd'; e.target.style.background = '#fff'; }}
+                onBlur={(e) => { e.target.style.borderColor = shake ? '#ef4444' : '#e2e8f0'; e.target.style.background = '#fafbfd'; }}
+              />
+            )}
+
+            {/* Footer row */}
+            {!isFileType && (
+              <div className="flex justify-between items-center mt-3">
+                <div className="flex items-center gap-[5px] text-[11.5px] text-[#64748b]">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[13px] h-[13px]">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+                  </svg>
+                  Supports Thai, English, and mixed-language
+                </div>
+                <div className="flex gap-1.5">
+                  {SAMPLES.map((_, i) => (
+                    <button
+                      key={i}
+                      className="text-[11.5px] text-[#475569] px-[13px] py-[5px] rounded-[7px] cursor-pointer transition-all"
+                      style={{ background: '#f1f5f9', border: '1.5px solid #e2e8f0', fontFamily: 'inherit' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#e2e8f0'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+                      onClick={() => setContent(SAMPLES[i])}
+                    >
+                      Sample {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div className="mt-4 p-3 rounded-xl text-sm text-red-300 border border-red-800 bg-red-950">
+                ⚠️ {error}
+              </div>
+            )}
+
+            {/* CTA Button */}
+            <button
+              onClick={handleSubmit}
+              className="w-full mt-5 py-4 rounded-xl text-[15px] font-bold text-white flex items-center justify-center gap-[9px] cursor-pointer transition-all"
+              style={{
+                background: '#2563eb',
+                border: 'none',
+                fontFamily: 'inherit',
+                letterSpacing: '.01em',
+                boxShadow: '0 3px 18px rgba(37,99,235,.3)',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = '#1d4ed8'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 5px 24px rgba(37,99,235,.4)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = '#2563eb'; e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 3px 18px rgba(37,99,235,.3)'; }}
+              onMouseDown={(e) => { e.currentTarget.style.transform = ''; }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-[17px] h-[17px]">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
+              Analyze for Risks
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/components/LoadingOverlay.jsx">
+// frontend/src/components/LoadingOverlay.jsx
+export default function LoadingOverlay() {
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-[18px]"
+      style={{ background: 'rgba(10,20,34,.92)' }}
+    >
+      <div
+        className="w-[52px] h-[52px] rounded-full border-[3px] border-[#1e3050] border-t-[#2563eb]"
+        style={{ animation: 'spin .8s linear infinite' }}
+      />
+      <div className="font-mono-ibm text-[#f1f5f9] text-[13.5px]">AI Engine กำลังวิเคราะห์</div>
+      <div className="font-mono-ibm text-[#64748b] text-[11.5px]">3-Agent Pipeline · Thai NLP · &lt; 4s</div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/components/ResultPage.jsx">
+// frontend/src/components/ResultPage.jsx
+import { Topbar, Statusbar } from './Topbar';
+
+function ScoreHero({ result }) {
+  const score = result?.score ?? 0;
+  const level = result?.level ?? 'unknown';
+
+  const heroGradient =
+    level === 'red'
+      ? 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)'
+      : level === 'yellow'
+      ? 'linear-gradient(135deg, #92400e 0%, #78350f 100%)'
+      : 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)';
+
+  const levelThai = result?.levelText || (level === 'red' ? 'อันตราย' : level === 'yellow' ? 'ระมัดระวัง' : 'ปลอดภัย');
+  const dangerLabel = level === 'red' ? 'อันตราย! — พบรูปแบบการหลอกลวงชัดเจน' : level === 'yellow' ? 'ระวัง! — พบสัญญาณเสี่ยงบางประการ' : 'ปลอดภัย — ไม่พบสัญญาณน่าสงสัย';
+
+  const pips = 9;
+  const filledPips = Math.round((score / 100) * pips);
+
+  return (
+    <div
+      className="p-7 pb-8 flex gap-7 items-start relative overflow-hidden"
+      style={{ background: heroGradient }}
+    >
+      {/* Diagonal stripe texture */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'repeating-linear-gradient(-45deg, rgba(255,255,255,.015) 0, rgba(255,255,255,.015) 1px, transparent 1px, transparent 14px)',
+        }}
+      />
+
+      {/* Score block */}
+      <div className="flex-shrink-0 relative z-10">
+        <div className="text-[10px] font-mono-ibm tracking-[.1em] text-center mb-[7px]" style={{ color: 'rgba(255,255,255,.45)', textTransform: 'uppercase' }}>
+          Risk Score
+        </div>
+        <div
+          className="w-[130px] h-[130px] rounded-[14px] flex flex-col items-center justify-center"
+          style={{ background: 'rgba(0,0,0,.22)', border: '1.5px solid rgba(255,255,255,.12)' }}
+        >
+          <span className="text-[50px] font-extrabold text-white leading-none font-mono-ibm">{score}</span>
+          <span className="text-[11px] font-mono-ibm" style={{ color: 'rgba(255,255,255,.45)' }}>/ 100</span>
+        </div>
+        <div className="flex gap-[3px] mt-[9px] justify-center">
+          {Array.from({ length: pips }).map((_, i) => (
+            <div
+              key={i}
+              className="w-[10px] h-[4px] rounded-[2px]"
+              style={{
+                background:
+                  i < filledPips - 1
+                    ? 'rgba(255,255,255,.75)'
+                    : i === filledPips - 1
+                    ? '#fff'
+                    : 'rgba(255,255,255,.18)',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 relative z-10 min-w-0">
+        <div
+          className="inline-flex items-center gap-1.5 text-[10.5px] font-mono-ibm font-semibold tracking-[.1em] rounded-full px-3 py-[3px] mb-3"
+          style={{ background: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.22)', color: 'rgba(255,255,255,.9)' }}
+        >
+          <span className="w-[5px] h-[5px] rounded-full" style={{ background: '#4ade80' }} />
+          ANALYSIS COMPLETE
+        </div>
+        <div className="text-2xl font-extrabold text-white leading-[1.2] mb-1.5">{dangerLabel}</div>
+        <div className="text-[12.5px] font-mono-ibm tracking-[.05em] mb-[18px]" style={{ color: 'rgba(255,255,255,.55)' }}>
+          {level === 'red' ? 'DANGER — High-Risk Scam Detected' : level === 'yellow' ? 'CAUTION — Suspicious Patterns Found' : 'SAFE — No Major Threats Detected'}
+        </div>
+
+        {/* Agent breakdown */}
+        <div
+          className="rounded-[10px] p-[13px] px-4"
+          style={{ background: 'rgba(0,0,0,.18)', border: '1px solid rgba(255,255,255,.1)' }}
+        >
+          <div className="text-[10px] font-mono-ibm tracking-[.12em] uppercase mb-[11px]" style={{ color: 'rgba(255,255,255,.4)' }}>
+            AI Agent Breakdown
+          </div>
+          {[
+            { label: 'LLM Contextual Agent (60%)', pct: Math.min(100, score + 2) },
+            { label: 'Rule-Based Engine (30%)', pct: Math.max(0, score - 5) },
+            { label: 'AI Classifier Thai (10%)', pct: Math.min(100, score + 4) },
+          ].map((a) => (
+            <div key={a.label} className="mb-[9px] last:mb-0">
+              <div className="flex justify-between text-[11.5px] mb-1" style={{ color: 'rgba(255,255,255,.7)' }}>
+                <span>{a.label}</span>
+                <span className="font-mono-ibm font-semibold text-white">{a.pct}%</span>
+              </div>
+              <div className="h-[4px] rounded-[2px] overflow-hidden" style={{ background: 'rgba(255,255,255,.12)' }}>
+                <div className="h-full rounded-[2px] prog-fill" style={{ width: `${a.pct}%`, background: 'rgba(255,255,255,.55)' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-function updateChar() {
-  document.getElementById('charCount').textContent = document.getElementById('mainInput').value.length + ' chars';
+function XAICard({ result }) {
+  const indicators = result?.indicators || [];
+  return (
+    <div className="bg-white rounded-[13px] p-[18px]" style={{ boxShadow: '0 1px 8px rgba(0,0,0,.06)' }}>
+      <div className="text-[11px] font-mono-ibm font-semibold tracking-[.1em] text-[#64748b] uppercase mb-[14px] pb-2.5 border-b border-[#f1f5f9]">
+        Explainable AI (XAI) Reasons — เหตุผลที่ AI ตัดสินใจแบบนี้
+      </div>
+      {indicators.length > 0 ? (
+        indicators.map((ind, i) => (
+          <div key={i} className="flex gap-[11px] py-[9px] border-b border-[#f8fafc] last:border-0 last:pb-0 text-[12.5px] text-[#334155] leading-[1.55]">
+            <div
+              className="flex-shrink-0 w-5 h-5 rounded-[5px] text-[10px] font-bold font-mono-ibm flex items-center justify-center"
+              style={{ background: '#eff6ff', color: '#2563eb' }}
+            >
+              {i + 1}
+            </div>
+            <div>{ind}</div>
+          </div>
+        ))
+      ) : (
+        <div className="text-[12.5px] text-[#64748b]">ไม่พบตัวชี้วัดความเสี่ยงที่ชัดเจน</div>
+      )}
+    </div>
+  );
 }
 
-function loadSample(n) {
-  const ta = document.getElementById('mainInput');
-  ta.value = samples[n-1];
-  updateChar();
+function AdviceCard({ result }) {
+  const level = result?.level ?? 'unknown';
+  const recommendation = result?.recommendation || '';
+
+  const baseAdvice = level === 'red'
+    ? [
+        { color: '#ef4444', text: 'บล็อกหมายเลขทันที — ห้ามตอบกลับโดยเด็ดขาด' },
+        { color: '#ef4444', text: 'ห้ามคลิกลิงก์ใดๆ — มีความเสี่ยงสูงจะติดตั้งมัลแวร์' },
+        { color: '#f59e0b', text: 'แจ้งความ ETDA โทร 1212 ตลอด 24 ชั่วโมง (โทรฟรี)' },
+        { color: '#f59e0b', text: 'แจ้งเตือนสมาชิกในครอบครัว — รูปแบบนี้กำลังแพร่กระจาย' },
+        { color: '#60a5fa', text: 'ร้องเรียนที่ thaipoliceonline.com' },
+      ]
+    : level === 'yellow'
+    ? [
+        { color: '#f59e0b', text: 'ใช้ความระมัดระวัง — ตรวจสอบแหล่งที่มาก่อนตอบสนอง' },
+        { color: '#f59e0b', text: 'ไม่ควรให้ข้อมูลส่วนตัวหรือทำธุรกรรมโดยไม่ยืนยัน' },
+        { color: '#60a5fa', text: 'หากสงสัย สามารถแจ้ง ETDA โทร 1212' },
+      ]
+    : [
+        { color: '#22c55e', text: 'ดูเหมือนปลอดภัย แต่ยังควรระมัดระวังเป็นปกติ' },
+        { color: '#22c55e', text: 'อย่าให้ข้อมูลส่วนตัวกับใครโดยไม่จำเป็น' },
+      ];
+
+  const BlockIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[18px] h-[18px]">
+      <circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+    </svg>
+  );
+  const WarnIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[18px] h-[18px]">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+  const InfoIcon = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[18px] h-[18px]">
+      <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
+    </svg>
+  );
+
+  return (
+    <div className="bg-white rounded-[13px] p-[18px]" style={{ boxShadow: '0 1px 8px rgba(0,0,0,.06)' }}>
+      <div className="text-[11px] font-mono-ibm font-semibold tracking-[.1em] text-[#64748b] uppercase mb-[14px] pb-2.5 border-b border-[#f1f5f9]">
+        Actionable Advice — สิ่งที่ควรทำทันที
+      </div>
+      {recommendation && (
+        <div className="text-[12.5px] text-[#334155] leading-[1.55] mb-3 pb-3 border-b border-[#f8fafc]">
+          {recommendation}
+        </div>
+      )}
+      {baseAdvice.map((a, i) => (
+        <div key={i} className="flex gap-2.5 py-2 border-b border-[#f8fafc] last:border-0 last:pb-0 text-[12.5px] text-[#334155] leading-[1.55] items-start">
+          <div className="flex-shrink-0 w-[18px] h-[18px] mt-0.5" style={{ color: a.color }}>
+            {i < 2 ? <BlockIcon /> : i < 4 ? <WarnIcon /> : <InfoIcon />}
+          </div>
+          <div>{a.text}</div>
+        </div>
+      ))}
+      <div className="bg-[#fff7ed] rounded-[9px] p-[11px] px-[13px] mt-[11px]">
+        <div className="text-[10.5px] font-bold font-mono-ibm tracking-[.08em] uppercase text-[#92400e] mb-[7px]">ช่องทางแจ้งเหตุ</div>
+        <div className="text-[12.5px] text-[#1e293b] py-[3px] flex items-center gap-[7px]">ETDA Cybercrime: <strong>1212</strong></div>
+        <div className="text-[12.5px] text-[#1e293b] py-[3px]">thaipoliceonline.com</div>
+      </div>
+    </div>
+  );
 }
 
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  window.scrollTo(0,0);
+export default function ResultPage({ result, onBack, onGoCyber, onGoIntel, onCopy }) {
+  const level = result?.level ?? 'unknown';
+
+  return (
+    <div className="fade-in min-h-screen" style={{ background: '#eef2f7' }}>
+      <Topbar
+        onBack={onBack}
+        backLabel="วิเคราะห์ใหม่"
+        rightSlot={
+          <div
+            className="flex items-center gap-[7px] text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-full cursor-pointer"
+            style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full led-blue" />
+            Connect Smartwatch
+          </div>
+        }
+      />
+      <Statusbar />
+
+      <div className="min-h-[calc(100vh-90px)]" style={{ background: '#eef2f7' }}>
+        {result && <ScoreHero result={result} />}
+
+        <div className="p-[22px] px-6 grid grid-cols-2 gap-4">
+          <XAICard result={result} />
+          <AdviceCard result={result} />
+
+          {/* Advanced Tools */}
+          <div
+            className="col-span-2 rounded-[13px] p-[18px]"
+            style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}
+          >
+            <div className="flex justify-between items-center mb-[14px]">
+              <div className="text-[11px] font-mono-ibm font-semibold tracking-[.1em] text-[#94a3b8] uppercase">
+                Advanced Tracing &amp; Deception Tools
+              </div>
+              <div
+                className="text-[10px] font-mono-ibm font-bold px-[9px] py-[2px] rounded-full tracking-[.06em]"
+                style={{ background: 'rgba(217,119,6,.12)', color: '#d97706', border: '1px solid rgba(217,119,6,.25)' }}
+              >
+                PRO FEATURES
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <button
+                  onClick={onGoIntel}
+                  className="w-full rounded-[9px] p-[13px] px-[14px] font-semibold text-[12.5px] flex items-center gap-2 cursor-pointer transition-all"
+                  style={{ background: 'rgba(220,38,38,.1)', borderColor: 'rgba(220,38,38,.3)', border: '1px solid', color: '#fca5a5', fontFamily: 'inherit' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.18)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.1)'; }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[15px] h-[15px] flex-shrink-0">
+                    <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+                  </svg>
+                  Generate Honey-Token Link Trap
+                </button>
+                <div className="text-[11px] text-[#64748b] mt-1.5 pl-0.5">สร้าง decoy URL เพื่อติดตาม digital footprint ของอาชญากร</div>
+              </div>
+              <div>
+                <button
+                  className="w-full rounded-[9px] p-[13px] px-[14px] font-semibold text-[12.5px] flex items-center gap-2 cursor-pointer transition-all"
+                  style={{ background: 'rgba(5,150,105,.1)', borderColor: 'rgba(5,150,105,.3)', border: '1px solid', color: '#6ee7b7', fontFamily: 'inherit' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.18)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.1)'; }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[15px] h-[15px] flex-shrink-0">
+                    <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" />
+                  </svg>
+                  One-Click Safe Share (LINE)
+                </button>
+                <div className="text-[11px] text-[#64748b] mt-1.5 pl-0.5">สร้าง Infographic ภาษาไทย-อังกฤษ เพื่อแจ้งเตือนครอบครัว</div>
+              </div>
+            </div>
+          </div>
+
+          {/* PDPA notice */}
+          <div
+            className="col-span-2 rounded-[10px] p-[11px] px-[15px] text-xs text-[#1e40af] leading-[1.6] flex gap-[9px]"
+            style={{ background: '#eff6ff', border: '1px solid #bfdbfe' }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" className="flex-shrink-0 w-[15px] h-[15px] mt-0.5">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            <span>
+              <strong>Automated Data Ephemerality:</strong> ข้อความและเนื้อหาทั้งหมดจะถูกลบออกจากระบบภายใน 5 นาที ไม่มีการเก็บข้อมูลส่วนบุคคล ปฏิบัติตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) พ.ศ. 2562
+            </span>
+          </div>
+
+          {/* Module navigation cards */}
+          <div className="col-span-2 grid grid-cols-2 gap-3">
+            {[
+              {
+                dot: '#f87171', title: 'Cyber Threat Tracing', sub: 'IP Geolocation · EXIF · Threat Map',
+                tag: 'FR2.6', tagClass: 'bg-[rgba(220,38,38,.12)] text-[#f87171] border-[rgba(220,38,38,.2)]',
+                onClick: onGoCyber,
+              },
+              {
+                dot: '#fbbf24', title: 'Threat Intel Center', sub: 'Honey-Token · ZKP Report · Crowd Intel',
+                tag: 'FR2.7', tagClass: 'bg-[rgba(217,119,6,.12)] text-[#d97706] border-[rgba(217,119,6,.2)]',
+                onClick: onGoIntel,
+              },
+            ].map((m) => (
+              <button
+                key={m.title}
+                onClick={m.onClick}
+                className="rounded-xl p-[14px] px-4 cursor-pointer flex items-center justify-between transition-all text-left"
+                style={{ background: '#0d1b2e', border: '1px solid rgba(255,255,255,0.07)', fontFamily: 'inherit' }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,.18)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.transform = ''; }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: m.dot, boxShadow: `0 0 7px ${m.dot}` }} />
+                  <div>
+                    <div className="text-[13px] font-semibold text-[#f1f5f9]">{m.title}</div>
+                    <div className="text-[11px] text-[#64748b] mt-0.5">{m.sub}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-mono-ibm font-bold px-2 py-[2px] rounded border ${m.tagClass}`}>{m.tag}</span>
+                  <span className="text-[#64748b] text-base">›</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/components/ThreatIntelPage.jsx">
+// frontend/src/components/ThreatIntelPage.jsx
+import { useState } from 'react';
+import { Topbar } from './Topbar';
+
+export default function ThreatIntelPage({ onBack }) {
+  const [phone, setPhone] = useState('');
+  const [lineId, setLineId] = useState('');
+  const [account, setAccount] = useState('');
+  const [zkpEnabled, setZkpEnabled] = useState(true);
+  const [baitType, setBaitType] = useState('pdf');
+  const [submitted, setSubmitted] = useState(false);
+  const [trapGenerated, setTrapGenerated] = useState(false);
+  const [trapUrl, setTrapUrl] = useState('');
+
+  const handleGenTrap = () => {
+    const fakeId = Math.random().toString(36).slice(2, 10).toUpperCase();
+    setTrapUrl(`https://canary.scamshield.th/bait/${fakeId}?t=${baitType}`);
+    setTrapGenerated(true);
+  };
+
+  const handleSubmitReport = () => {
+    if (!phone && !lineId && !account) return;
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+    setPhone(''); setLineId(''); setAccount('');
+  };
+
+  return (
+    <div className="fade-in min-h-screen" style={{ background: '#0d1b2e' }}>
+      <Topbar onBack={onBack} backLabel="กลับ" />
+
+      {/* Intel sub-bar */}
+      <div
+        className="px-6 py-2.5 flex items-center justify-between"
+        style={{ background: '#0a1520', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      >
+        <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-[30px] h-[30px] rounded-[7px] flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d97706, #dc2626)' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-4 h-4">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-[#f1f5f9] font-mono-ibm">THREAT INTEL CENTER</div>
+              <div className="text-[10px] text-[#64748b]">Honey-Token · ZKP · Crowd Intel</div>
+            </div>
+          </div>
+          <div className="text-[10.5px] font-mono-ibm font-bold tracking-[.08em] px-3 py-[3px] rounded-full text-[#34d399]" style={{ background: 'rgba(5,150,105,.12)', border: '1px solid rgba(5,150,105,.25)' }}>
+            DB ONLINE
+          </div>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className="rounded-[7px] text-[11px] font-mono-ibm text-[#94a3b8] px-3 py-1" style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}>
+            Reports Today: <strong className="text-[#34d399]">+342</strong>
+          </div>
+          <div className="rounded-[7px] text-[11px] font-mono-ibm text-[#94a3b8] px-3 py-1" style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}>
+            Honey Traps: <strong>1,847 active</strong>
+          </div>
+        </div>
+      </div>
+
+      {/* 2-column layout */}
+      <div className="grid min-h-[calc(100vh-170px)]" style={{ gridTemplateColumns: '380px 1fr' }}>
+        {/* Left: search */}
+        <div className="p-[18px] px-5" style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}>
+          <div className="rounded-xl p-4 mb-4" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="text-sm font-bold text-[#f1f5f9] mb-[5px]">Counter-Intelligence Search</div>
+            <div className="text-xs text-[#64748b] leading-[1.55]">ค้นหาหมายเลขโทรศัพท์ LINE ID หรือเลขบัญชีธนาคารที่ต้องสงสัย แล้วเปิดใช้งานมาตรการตอบโต้ได้</div>
+          </div>
+
+          <div className="flex items-center gap-2 font-mono-ibm text-[10.5px] font-bold tracking-[.12em] text-[#64748b] uppercase mb-3 mt-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+            Threat Target Input
+          </div>
+
+          {[
+            { icon: <PhoneIcon />, label: 'หมายเลขโทรศัพท์', placeholder: '08x-xxx-xxxx', value: phone, set: setPhone },
+            { icon: <ChatIcon />, label: 'Line ID / Social Handle', placeholder: '@scam_invest หรือ username', value: lineId, set: setLineId },
+            { icon: <CardIcon />, label: 'หมายเลขบัญชีธนาคาร', placeholder: 'เลขบัญชี + ชื่อธนาคาร', value: account, set: setAccount },
+          ].map((f) => (
+            <div key={f.label} className="mb-[11px]">
+              <div className="flex items-center gap-1.5 text-xs text-[#94a3b8] mb-1.5">
+                <span className="w-[13px] h-[13px] text-[#64748b]">{f.icon}</span>
+                {f.label}
+              </div>
+              <div
+                className="w-full flex items-center gap-2 rounded-lg px-[13px] py-[9px] transition-all"
+                style={{ background: '#0d1b2e', border: '1.5px solid rgba(255,255,255,0.07)' }}
+                onFocus={() => {}}
+              >
+                <span className="w-[13px] h-[13px] flex-shrink-0 text-[#64748b]">{f.icon}</span>
+                <input
+                  type="text"
+                  placeholder={f.placeholder}
+                  value={f.value}
+                  onChange={(e) => f.set(e.target.value)}
+                  className="flex-1 font-mono-ibm text-xs bg-transparent outline-none text-[#f1f5f9] placeholder:text-[#64748b]"
+                  style={{ border: 'none' }}
+                />
+              </div>
+            </div>
+          ))}
+
+          <button
+            onClick={() => {}}
+            className="w-full mt-1.5 rounded-[9px] py-[11px] font-semibold text-[13px] flex items-center justify-center gap-[7px] cursor-pointer transition-all text-[#94a3b8]"
+            style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)', fontFamily: 'inherit' }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(96,165,250,.4)'; e.currentTarget.style.color = '#f1f5f9'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = '#94a3b8'; }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[14px] h-[14px]">
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+            Check Database &amp; Scan History
+          </button>
+        </div>
+
+        {/* Right panel */}
+        <div className="p-[18px] px-5 flex flex-col gap-[14px]">
+          {/* Honey trap card */}
+          <div className="rounded-xl p-4" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="flex items-center gap-2.5 mb-[14px]">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(220,38,38,.12)' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" className="w-4 h-4">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-[13px] font-bold text-[#f1f5f9]">Advanced Countermeasures</div>
+                <div className="text-[11px] text-[#64748b] mt-0.5">ค้นหาก่อนเพื่อเปิดใช้งานระบบตอบโต้</div>
+              </div>
+            </div>
+
+            {/* Trap box */}
+            <div className="rounded-[10px] p-[13px] px-[14px] mb-3" style={{ background: '#0d1b2e', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="flex items-center gap-2 mb-2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2" className="w-[15px] h-[15px]">
+                  <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+                </svg>
+                <div className="text-[12.5px] font-bold text-[#f1f5f9]">Deploy Deception Trap</div>
+                <div className="text-[9.5px] font-mono-ibm font-bold px-[7px] py-[2px] rounded" style={{ background: 'rgba(217,119,6,.12)', border: '1px solid rgba(217,119,6,.25)', color: '#d97706' }}>
+                  Canary Honey-Token
+                </div>
+              </div>
+              <div className="text-xs text-[#64748b] leading-[1.55] mb-[11px]">Turn the tables. Generate a decoy asset link to capture the scammer's real digital footprint legally when they click it out of greed.</div>
+              <div className="font-mono-ibm text-[10.5px] tracking-[.08em] text-[#64748b] uppercase mb-[7px]">Bait Type</div>
+              <div className="flex items-center justify-between rounded-lg px-3 py-[9px] cursor-pointer mb-[11px]" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="flex items-center gap-2 text-[12.5px] text-[#f1f5f9]">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" className="w-[14px] h-[14px]">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  Fake Bank Transfer Slip (.pdf)
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9.5px] font-mono-ibm font-bold px-2 py-[2px] rounded" style={{ background: 'rgba(220,38,38,.12)', border: '1px solid rgba(220,38,38,.2)', color: '#f87171' }}>Most Effective</span>
+                  <span className="text-[#64748b]">▾</span>
+                </div>
+              </div>
+              {trapGenerated && (
+                <div className="mb-3 p-2 px-3 rounded-lg font-mono-ibm text-[11px] break-all" style={{ background: 'rgba(5,150,105,.1)', border: '1px solid rgba(5,150,105,.3)', color: '#34d399' }}>
+                  ✓ {trapUrl}
+                </div>
+              )}
+              <button
+                onClick={handleGenTrap}
+                className="w-full rounded-lg py-[11px] font-bold text-[13px] flex items-center justify-center gap-[7px] cursor-pointer transition-all"
+                style={{ background: 'rgba(220,38,38,.1)', border: '1px solid rgba(220,38,38,.3)', color: '#fca5a5', fontFamily: 'inherit' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.18)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(220,38,38,.1)'; }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-[15px] h-[15px]">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                {trapGenerated ? 'Regenerate Honey-Trap Link' : 'Generate Honey-Trap Link'}
+              </button>
+            </div>
+          </div>
+
+          {/* Anonymous report card */}
+          <div className="rounded-xl p-4" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="flex items-center gap-2.5 mb-[14px]">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(5,150,105,.12)' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" className="w-4 h-4">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-[13px] font-bold text-[#f1f5f9]">Privacy-First Anonymous Report</div>
+                <div className="text-[11px] text-[#64748b] mt-0.5">รายงานแบบนิรนาม PDPA-Safe</div>
+              </div>
+            </div>
+            <p className="text-xs text-[#64748b] leading-[1.55] mb-[13px]">Contribute to the central threat database. Your submission will be cryptographically hashed. Even we (the developers) cannot track who reported this or view your raw private chats.</p>
+
+            <div className="font-mono-ibm text-[10.5px] font-bold tracking-[.12em] text-[#64748b] uppercase mb-3">สิ่งที่จะถูกส่งไปยังฐานข้อมูล</div>
+
+            {[
+              { label: 'หมายเลขโทรศัพท์ / Line ID (Hashed)', included: true, badge: 'HASHED', badgeColor: '#34d399', badgeBg: 'rgba(5,150,105,.12)', badgeBorder: 'rgba(5,150,105,.2)' },
+              { label: 'หมายเลขบัญชีธนาคาร (Masked)', included: true, badge: 'MASKED', badgeColor: '#d97706', badgeBg: 'rgba(217,119,6,.12)', badgeBorder: 'rgba(217,119,6,.2)' },
+              { label: 'ประเภทการหลอกลวง (Encoded)', included: true, badge: 'ENCODED', badgeColor: '#a5b4fc', badgeBg: 'rgba(99,102,241,.12)', badgeBorder: 'rgba(99,102,241,.2)' },
+              { label: 'เนื้อหาการสนทนาส่วนตัว', included: false, badge: 'EXCLUDED', badgeColor: '#64748b', badgeBg: 'rgba(255,255,255,.04)', badgeBorder: 'rgba(255,255,255,0.07)' },
+              { label: 'ข้อมูลตัวตนของผู้รายงาน', included: false, badge: 'EXCLUDED', badgeColor: '#64748b', badgeBg: 'rgba(255,255,255,.04)', badgeBorder: 'rgba(255,255,255,0.07)' },
+            ].map((row) => (
+              <div key={row.label} className="flex justify-between items-center py-[7.5px] border-b last:border-0 text-xs" style={{ borderColor: 'rgba(255,255,255,.04)' }}>
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-[14px] h-[14px] rounded-[3px] flex-shrink-0 relative"
+                    style={{
+                      background: row.included ? 'rgba(5,150,105,.12)' : 'rgba(255,255,255,.03)',
+                      border: row.included ? '1.5px solid rgba(5,150,105,.4)' : '1.5px solid rgba(255,255,255,.08)',
+                    }}
+                  >
+                    {row.included && (
+                      <span className="absolute text-[#34d399] text-[10px] font-bold" style={{ left: 1, top: -1 }}>✓</span>
+                    )}
+                  </div>
+                  <span style={{ color: row.included ? '#94a3b8' : '#64748b' }}>{row.label}</span>
+                </div>
+                <span
+                  className="font-mono-ibm text-[9.5px] font-bold px-2 py-[2px] rounded"
+                  style={{ background: row.badgeBg, color: row.badgeColor, border: `1px solid ${row.badgeBorder}` }}
+                >
+                  {row.badge}
+                </span>
+              </div>
+            ))}
+
+            {/* ZKP Toggle */}
+            <div className="flex justify-between items-center py-[11px] mt-2" style={{ borderTop: '1px solid rgba(255,255,255,.04)' }}>
+              <div>
+                <div className="text-xs text-[#f1f5f9] font-medium">Enable Homomorphic Cryptographic Hashing</div>
+                <div className="text-[10.5px] text-[#64748b] mt-0.5">ยกระดับความปลอดภัยด้วย SHA-256 + ZKP protocol</div>
+              </div>
+              <label className="relative w-9 h-5 cursor-pointer flex-shrink-0">
+                <input type="checkbox" checked={zkpEnabled} onChange={(e) => setZkpEnabled(e.target.checked)} className="opacity-0 w-0 h-0 absolute" />
+                <span className="tslider" />
+              </label>
+            </div>
+
+            {/* ZKP info bar */}
+            <div className="rounded-lg p-[9px] px-3 flex gap-2 text-[11.5px] leading-[1.55] mb-3" style={{ background: 'rgba(5,150,105,.12)', border: '1px solid rgba(5,150,105,.2)', color: '#34d399' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[14px] h-[14px] flex-shrink-0 mt-0.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Zero-Knowledge Proof (ZKP) ช่วยให้พิสูจน์ข้อมูลของคุณถูกต้องโดยไม่เปิดเผยข้อมูลส่วนบุคคล — ตามหลักการ PDPA
+            </div>
+
+            {submitted && (
+              <div className="mb-3 p-2 px-3 rounded-lg text-xs font-semibold" style={{ background: 'rgba(5,150,105,.15)', border: '1px solid rgba(5,150,105,.3)', color: '#34d399' }}>
+                ✓ รายงานถูกส่งเรียบร้อยแล้ว — ขอบคุณที่ช่วยปกป้องชุมชน
+              </div>
+            )}
+
+            <button
+              onClick={handleSubmitReport}
+              className="w-full font-bold text-[13.5px] rounded-[9px] py-[13px] flex items-center justify-center gap-2 cursor-pointer transition-all"
+              style={{ background: 'rgba(5,150,105,.12)', border: '1px solid rgba(5,150,105,.3)', color: '#34d399', fontFamily: 'inherit', boxShadow: '0 2px 12px rgba(5,150,105,.1)' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.2)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(5,150,105,.12)'; }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-[15px] h-[15px]">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+              </svg>
+              Submit Anonymous ZKP Report
+            </button>
+          </div>
+
+          {/* Crowd intel bar */}
+          <div className="rounded-[10px] p-[13px] px-[15px] flex gap-[9px] text-[11.5px] text-[#64748b] leading-[1.6]" style={{ background: '#1a2b40', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" className="w-[14px] h-[14px] flex-shrink-0 mt-0.5">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+            </svg>
+            ระบบ Crowdsourced Intelligence: ข้อมูลทุกรายงานถูกรวบรวมเข้ากับ National Scam Registry แลกเปลี่ยนกับ ETDA · DSI · สำนักงานตำรวจแห่งชาติ ผ่านกรอบกฎหมาย MoU — ข้อมูลส่วนตัวของผู้รายงานได้รับการปกป้อง PDPA พ.ศ. 2562
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-function startAnalysis() {
-  const v = document.getElementById('mainInput').value.trim();
-  if (!v) {
-    const ta = document.getElementById('mainInput');
-    ta.style.borderColor = '#ef4444';
-    setTimeout(() => ta.style.borderColor = '', 1500);
-    return;
-  }
-  const o = document.getElementById('loadingOverlay');
-  o.classList.add('show');
-  setTimeout(() => { o.classList.remove('show'); showPage('result'); }, 2200);
+// Icon helpers
+const PhoneIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 0112 18.54 19.5 19.5 0 015.19 12 19.79 19.79 0 012.1 3.22 2 2 0 014 1h3a2 2 0 012 1.72c.128.96.362 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.34 1.85.574 2.81.7A2 2 0 0122 14.92z" />
+  </svg>
+);
+
+const ChatIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+  </svg>
+);
+
+const CardIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-full h-full">
+    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
+  </svg>
+);
+</file>
+
+<file path="frontend/src/components/Toast.jsx">
+// frontend/src/components/Toast.jsx
+export default function Toast({ message }) {
+  return (
+    <div
+      className="fixed bottom-5 right-5 text-white text-[12.5px] font-mono-ibm px-4 py-2 rounded-lg z-[300] pointer-events-none"
+      style={{ background: '#059669', opacity: 1, transition: 'opacity .3s' }}
+    >
+      {message}
+    </div>
+  );
+}
+</file>
+
+<file path="frontend/src/components/Topbar.jsx">
+// frontend/src/components/Topbar.jsx
+
+// ── Shield icon
+const ShieldIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="w-[18px] h-[18px]">
+    <path d="M12 3L4 7v5c0 5.25 3.5 10.1 8 11.5C16.5 22.1 20 17.25 20 12V7L12 3z" />
+  </svg>
+);
+
+const ArrowLeft = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+    <path d="M19 12H5M12 19l-7-7 7-7" />
+  </svg>
+);
+
+export function Topbar({ onBack, backLabel = 'กลับ', rightSlot }) {
+  return (
+    <nav
+      className="h-14 px-7 flex items-center justify-between sticky top-0 z-[90]"
+      style={{ background: '#0d1b2e', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      <div className="flex items-center gap-[11px]">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-[7px] border cursor-pointer transition-all hover:text-[#f1f5f9] hover:bg-[#1e3050]"
+            style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'transparent', fontFamily: 'inherit' }}
+          >
+            <ArrowLeft />
+            {backLabel}
+          </button>
+        )}
+        <div
+          className="w-[34px] h-[34px] rounded-[8px] flex items-center justify-center flex-shrink-0"
+          style={{ background: '#2563eb' }}
+        >
+          <ShieldIcon />
+        </div>
+        <div>
+          <div className="text-sm font-bold text-[#f1f5f9] tracking-[0.03em]">SCAM DETECTOR</div>
+          <div className="text-[11px] text-[#64748b] tracking-[0.01em]">PDPA Compliant · AI Engine</div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2.5">
+        {rightSlot}
+        <StatusPill color="green" label="AI Engine Online" />
+      </div>
+    </nav>
+  );
 }
 
-function copyText(txt) {
-  navigator.clipboard.writeText(txt).catch(() => {});
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+export function StatusPill({ color = 'green', label }) {
+  const dotClass = color === 'green' ? 'led-green' : color === 'blue' ? 'led-blue' : 'led-red';
+  return (
+    <div
+      className="flex items-center gap-[7px] text-[#94a3b8] text-xs px-[14px] py-[5px] rounded-full cursor-pointer transition-all"
+      style={{ background: '#1e3050', border: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dotClass}`} />
+      {label}
+    </div>
+  );
 }
-</script>
-</body>
-</html>
+
+export function Statusbar() {
+  const tags = [
+    { color: 'bg-[#22c55e]', label: 'End-to-End Encrypted' },
+    { color: 'bg-[#f87171]', label: '3-Agent AI Pipeline' },
+    { color: 'bg-[#60a5fa]', label: 'Thai-Language NLP' },
+    { color: 'bg-[#fbbf24]', label: '< 4s Analysis Time' },
+    { color: 'bg-[#22c55e]', label: 'PDPA 2562 Compliant' },
+  ];
+  return (
+    <div
+      className="px-7 py-1.5 flex items-center gap-7 flex-wrap"
+      style={{ background: '#152236', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+    >
+      {tags.map((t) => (
+        <div key={t.label} className="flex items-center gap-[5px] font-mono-ibm text-[11px] text-[#64748b]">
+          <span className={`w-[5px] h-[5px] rounded-full ${t.color}`} />
+          {t.label}
+        </div>
+      ))}
+    </div>
+  );
+}
 </file>
 
 <file path="README.md">
 # AI-scam-security
+</file>
+
+<file path="backend/index.js">
+// backend/index.js
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import { rateLimit } from 'express-rate-limit';
+import dotenv from 'dotenv';
+import analyzeRouter from './routes/analyze.js';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.use(helmet());
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ['http://localhost:5173'];
+
+app.use(cors({ origin: allowedOrigins }));
+app.use(express.json({ limit: '1mb' }));
+
+// จำกัด 20 req/นาที ต่อ IP — ป้องกัน Gemini quota หมด
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: { error: 'คุณส่งคำขอมากเกินไป กรุณารอสักครู่' },
+});
+app.use('/api', limiter);
+app.use('/api', analyzeRouter);
+
+app.listen(PORT, () => console.log(`✅ Backend on http://localhost:${PORT}`));
 </file>
 
 <file path="backend/routes/analyze.js">
@@ -2059,43 +1827,20 @@ export default router;
 </file>
 
 <file path="backend/services/geminiService.js">
-// backend/services/geminiService.js
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// เรียกใช้งานด้วย API Key เดิมของคุณ
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
-// ถอดเสียงด้วย Hugging Face Inference API (ฟรี ไม่จำกัด)
-async function transcribeWithHuggingFace(fileBuffer, mimetype) {
-  const HF_TOKEN = process.env.HF_API_KEY;
+// 🌟 เปลี่ยนมาใช้งานโมเดลฟรีเวอร์ชันล่าสุดตามที่มีใน Google AI Studio ของคุณ
+const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  const res = await fetch(
-    'https://api-inference.huggingface.co/models/openai/whisper-large-v3',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${HF_TOKEN}`,
-        'Content-Type': mimetype,
-      },
-      body: fileBuffer,
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.text();
-    // Model กำลัง load (cold start) — รอแล้วลองใหม่
-    if (res.status === 503) throw new Error('MODEL_LOADING');
-    throw new Error(`Hugging Face error: ${err}`);
-  }
-
-  const data = await res.json();
-  return data.text || '';
-}
-
-const buildPrompt = (inputText, inputType, urlSafetyResult) => {
-  // ถ้า Safe Browsing ยืนยันว่าอันตราย ให้บอก Gemini ด้วย
+/**
+ * ฟังก์ชันสร้าง Prompt ให้กับ AI ทำงานแยกแยะแบบ Agent ตามโครงสร้างระบบเดิมของคุณ
+ */
+const buildPrompt = (userInput, inputType, urlSafetyResult) => {
   const safeBrowsingNote = urlSafetyResult?.isMalicious
     ? `\n[หมายเหตุ: Google Safe Browsing ตรวจพบว่า URL นี้เป็นอันตราย ประเภท: ${urlSafetyResult.threats.join(', ')}]`
     : '';
@@ -2138,10 +1883,13 @@ const buildPrompt = (inputText, inputType, urlSafetyResult) => {
 ---
 ประเภทข้อมูล: ${inputType}${safeBrowsingNote}
 ข้อมูลที่ต้องวิเคราะห์:
-${inputText}
+${userInput}
 `;
 };
 
+/**
+ * ฟังก์ชันหลักในการวิเคราะห์ข้อมูล รองรับ Text, URL, Image และ Audio แบบ Multimodal
+ */
 export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyResult }) {
   const maxRetries = 3;
 
@@ -2153,51 +1901,47 @@ export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyR
       if (text) userInput = `ข้อความ: ${text}`;
       if (url)  userInput = `URL: ${url}`;
 
+      // 🛠️ การจัดการข้อมูลประเภทไฟล์ (รูปภาพ หรือ เสียง) ส่งตรงหา Gemini 3.5 Flash
       if (file) {
-        if (inputType === 'audio') {
-          // Hugging Face Whisper — ฟรี ไม่จำกัด
-          let transcript = '';
-          for (let t = 1; t <= 3; t++) {
-            try {
-              transcript = await transcribeWithHuggingFace(file.buffer, file.mimetype);
-              break;
-            } catch (e) {
-              if (e.message === 'MODEL_LOADING' && t < 3) {
-                // Model กำลัง warm up รอ 20 วินาที (cold start ปกติ)
-                console.log(`⏳ Whisper model loading... รอ 20s (attempt ${t}/3)`);
-                await new Promise(r => setTimeout(r, 20000));
-              } else throw e;
-            }
+        // แปลง Buffer ของไฟล์ดิบให้อยู่ในรูปแบบ Base64 string ตามที่คู่มือ Gemini กำหนด
+        const base64Data = file.buffer.toString('base64');
+        
+        parts.push({
+          inlineData: {
+            data: base64Data,
+            mimeType: file.mimetype // ส่งประเภทไฟล์ เช่น audio/mp3 หรือ image/png
           }
-          if (!transcript.trim()) throw new Error('ไม่สามารถถอดความเสียงได้');
-          userInput = `ข้อความที่ถอดจากเสียง: ${transcript}`;
+        });
+
+        // กำหนดคำสั่งเบื้องต้นให้ AI ทราบหน้าที่ตามประเภทสื่อที่ส่งไป
+        if (inputType === 'audio') {
+          userInput = 'นี่คือไฟล์เสียง กรุณาฟังเนื้อหาทั้งหมดอย่างละเอียด แล้วนำไปวิเคราะห์หาความเสี่ยงมิจฉาชีพ';
         } else {
-          // รูปภาพ — ส่งตรงไป Gemini ได้เลย
-          const base64 = file.buffer.toString('base64');
-          parts.push({ inlineData: { data: base64, mimeType: file.mimetype } });
-          userInput = 'นี่คือรูปภาพ กรุณาอ่านข้อความในภาพและวิเคราะห์';
+          userInput = 'นี่คือรูปภาพ กรุณาอ่านและถอดข้อความในภาพทั้งหมด แล้วนำไปวิเคราะห์หาความเสี่ยงมิจฉาชีพ';
         }
       }
 
+      // แนบส่วนของ Prompt หลักเข้าไปในชุดข้อมูลที่ต้องการส่ง
       parts.push({ text: buildPrompt(userInput, inputType || 'text', urlSafetyResult) });
 
+      // ส่งชุดข้อมูล (Multimodal) ไปประมวลผลที่เซิร์ฟเวอร์ Google
       const result = await model.generateContent({
         contents: [{ role: 'user', parts }],
       });
 
       const responseText = result.response.text();
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('AI ไม่ส่งข้อมูล JSON กลับมา');
+      if (!jsonMatch) throw new Error('AI ไม่ส่งข้อมูลโครงสร้าง JSON กลับมา');
 
       const parsed = JSON.parse(jsonMatch[0]);
 
-      // ถ้า Safe Browsing ยืนยันว่าอันตราย → บังคับ score ขั้นต่ำ 80
+      // ตรวจสอบความปลอดภัยเพิ่มเติมร่วมกับสิทธิ์ URL
       if (urlSafetyResult?.isMalicious && parsed.score < 80) {
         parsed.score = 85;
         parsed.level = 'red';
         parsed.levelText = 'อันตราย';
         parsed.indicators = [
-          `Google Safe Browsing: ${urlSafetyResult.threats.join(', ')}`,
+          `Google Safe Browsing 检测: ${urlSafetyResult.threats.join(', ')}`,
           ...(parsed.indicators || []),
         ];
       }
@@ -2207,9 +1951,10 @@ export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyR
     } catch (err) {
       console.log(`❌ Attempt ${attempt}/${maxRetries}:`, err.message);
 
+      // กรณีเจอปัญหา Overload หรือ Rate Limit ชั่วคราว ให้รอและลองใหม่
       if ((err.message.includes('503') || err.message.includes('429')) && attempt < maxRetries) {
         const wait = attempt * 2000;
-        console.log(`⏳ รอ ${wait / 1000}s แล้วลองใหม่...`);
+        console.log(`⏳ กำลังรอระบบว่าง ${wait / 1000} วินาที...`);
         await new Promise(r => setTimeout(r, wait));
         continue;
       }
@@ -2220,39 +1965,23 @@ export async function analyzeWithGemini({ text, url, file, inputType, urlSafetyR
 }
 </file>
 
-<file path="backend/index.js">
-// backend/index.js
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import { rateLimit } from 'express-rate-limit';
-import dotenv from 'dotenv';
-import analyzeRouter from './routes/analyze.js';
-
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 5000;
-
-app.use(helmet());
-
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:5173'];
-
-app.use(cors({ origin: allowedOrigins }));
-app.use(express.json({ limit: '1mb' }));
-
-// จำกัด 20 req/นาที ต่อ IP — ป้องกัน Gemini quota หมด
-const limiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  message: { error: 'คุณส่งคำขอมากเกินไป กรุณารอสักครู่' },
-});
-app.use('/api', limiter);
-app.use('/api', analyzeRouter);
-
-app.listen(PORT, () => console.log(`✅ Backend on http://localhost:${PORT}`));
+<file path="frontend/index.html">
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scam Detector — PDPA Compliant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
 </file>
 
 <file path="frontend/package.json">
@@ -2290,6 +2019,144 @@ app.listen(PORT, () => console.log(`✅ Backend on http://localhost:${PORT}`));
 }
 </file>
 
+<file path="frontend/src/index.css">
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0d1b2e;
+  --color-navy-mid: #152236;
+  --color-navy-card: #1a2b40;
+  --color-navy-light: #1e3050;
+  --color-border: rgba(255,255,255,0.07);
+  --color-scam-blue: #2563eb;
+  --color-scam-teal: #0891b2;
+  --color-scam-green: #059669;
+  --color-scam-red: #dc2626;
+  --color-scam-amber: #d97706;
+  --color-text1: #f1f5f9;
+  --color-text2: #94a3b8;
+  --color-text3: #64748b;
+  --color-page-bg: #eef2f7;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans','IBM Plex Sans Thai',sans-serif;
+    background: #eef2f7;
+    color: #0d1b2e;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    margin: 0; padding: 0;
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #1e3050; border-radius: 2px; }
+}
+
+@layer utilities {
+  .font-mono-ibm { font-family: 'IBM Plex Mono', monospace; }
+
+  .led-green {
+    background: #22c55e;
+    box-shadow: 0 0 5px #22c55e;
+  }
+  .led-blue {
+    background: #60a5fa;
+    box-shadow: 0 0 5px #60a5fa;
+  }
+  .led-red {
+    background: #f87171;
+    box-shadow: 0 0 5px #f87171;
+  }
+
+  .breathe {
+    animation: breathe 2.5s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { box-shadow: 0 0 4px rgba(5,150,105,.2); }
+    50%      { box-shadow: 0 0 10px rgba(5,150,105,.5); }
+  }
+
+  .spin-slow {
+    animation: spin 4s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .fade-in {
+    animation: fadeIn .25s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(6px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .prog-fill {
+    transition: width 1s ease;
+  }
+
+  .tslider {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: rgba(37,99,235,.15);
+    border: 1px solid rgba(37,99,235,.3);
+    transition: all .3s;
+  }
+  .tslider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #60a5fa;
+    top: 2px; left: 2px;
+    transition: all .3s;
+    box-shadow: 0 0 5px rgba(96,165,250,.5);
+  }
+  input:checked + .tslider::before {
+    transform: translateX(16px);
+  }
+}
+</file>
+
+<file path="frontend/src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path="frontend/vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+  ],
+  server: {
+    port: 5173,
+  }
+})
+</file>
+
 <file path="backend/package.json">
 {
   "name": "backend",
@@ -2305,6 +2172,7 @@ app.listen(PORT, () => console.log(`✅ Backend on http://localhost:${PORT}`));
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "axios": "^1.18.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -2320,32 +2188,46 @@ app.listen(PORT, () => console.log(`✅ Backend on http://localhost:${PORT}`));
 <file path="frontend/src/App.jsx">
 // frontend/src/App.jsx
 import { useState } from 'react';
-import InputPanel from './components/InputPanel';
-import ResultDashboard from './components/ResultDashboard';
+import InputPage from './components/InputPage';
+import ResultPage from './components/ResultPage';
+import CyberTracingPage from './components/CyberTracingPage';
+import ThreatIntelPage from './components/ThreatIntelPage';
+import LoadingOverlay from './components/LoadingOverlay';
+import Toast from './components/Toast';
 
 export default function App() {
+  const [page, setPage] = useState('input');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [toast, setToast] = useState('');
+  const [inputText, setInputText] = useState('');
 
-  const handleAnalyze = async (formData) => {
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(''), 2200);
+  };
+
+  const handleAnalyze = async (formData, textValue) => {
     setLoading(true);
     setError('');
     setResult(null);
+    setInputText(textValue || '');
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/analyze`, {
-        method: 'POST',
-        body: formData, // FormData รองรับทั้งข้อความและไฟล์
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/analyze`,
+        { method: 'POST', body: formData }
+      );
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error);
+        throw new Error(err.error || 'เกิดข้อผิดพลาด');
       }
 
       const data = await res.json();
       setResult(data);
+      setPage('result');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -2353,33 +2235,34 @@ export default function App() {
     }
   };
 
+  const goTo = (p) => {
+    setPage(p);
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800 px-6 py-4">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-sm font-bold">
-            🛡️
-          </div>
-          <div>
-            <h1 className="text-lg font-semibold">ScamShield</h1>
-            <p className="text-xs text-gray-400">ตรวจจับมิจฉาชีพด้วย AI</p>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ fontFamily: "'DM Sans','IBM Plex Sans Thai',sans-serif" }}>
+      {loading && <LoadingOverlay />}
+      {toast && <Toast message={toast} />}
 
-      {/* Main */}
-      <main className="max-w-4xl mx-auto px-6 py-10 space-y-8">
-        <InputPanel onAnalyze={handleAnalyze} loading={loading} />
-
-        {error && (
-          <div className="bg-red-950 border border-red-800 rounded-xl p-4 text-red-300 text-sm">
-            ⚠️ {error}
-          </div>
-        )}
-
-        {result && <ResultDashboard result={result} />}
-      </main>
+      {page === 'input' && (
+        <InputPage onAnalyze={handleAnalyze} error={error} />
+      )}
+      {page === 'result' && (
+        <ResultPage
+          result={result}
+          onBack={() => goTo('input')}
+          onGoCyber={() => goTo('cyber')}
+          onGoIntel={() => goTo('intel')}
+          onCopy={(txt) => { navigator.clipboard.writeText(txt).catch(() => {}); showToast('คัดลอกแล้ว'); }}
+        />
+      )}
+      {page === 'cyber' && (
+        <CyberTracingPage onBack={() => goTo('result')} onCopy={(txt) => { navigator.clipboard.writeText(txt).catch(() => {}); showToast('คัดลอกแล้ว'); }} />
+      )}
+      {page === 'intel' && (
+        <ThreatIntelPage onBack={() => goTo('result')} />
+      )}
     </div>
   );
 }
